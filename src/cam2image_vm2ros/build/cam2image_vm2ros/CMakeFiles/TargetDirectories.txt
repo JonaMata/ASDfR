@@ -1,0 +1,11 @@
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/uninstall.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/cam2image_vm2ros_uninstall.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/cam2image_vm2ros.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/cam2image.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/test.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/edit_cache.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/list_install_components.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/install.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/install/local.dir
+/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros/CMakeFiles/install/strip.dir

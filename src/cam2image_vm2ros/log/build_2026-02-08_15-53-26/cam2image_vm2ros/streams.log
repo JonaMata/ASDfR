@@ -1,0 +1,77 @@
+[0.042s] Invoking command in '/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/ubuntu/ASDfR/cam2image_vm2ros -DCMAKE_INSTALL_PREFIX=/home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros
+[0.198s] -- The C compiler identification is GNU 13.3.0
+[0.329s] -- The CXX compiler identification is GNU 13.3.0
+[0.355s] -- Detecting C compiler ABI info
+[0.706s] -- Detecting C compiler ABI info - done
+[0.737s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.738s] -- Detecting C compile features
+[0.739s] -- Detecting C compile features - done
+[0.758s] -- Detecting CXX compiler ABI info
+[1.082s] -- Detecting CXX compiler ABI info - done
+[1.113s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.114s] -- Detecting CXX compile features
+[1.115s] -- Detecting CXX compile features - done
+[1.142s] -- Found ament_cmake: 2.5.5 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.260s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.582s] -- Found rclcpp: 28.1.16 (/opt/ros/jazzy/share/rclcpp/cmake)
+[1.756s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[1.819s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[1.883s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.948s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.173s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[2.191s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[2.323s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[2.347s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[2.375s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.530s] -- Found rclcpp_components: 28.1.16 (/opt/ros/jazzy/share/rclcpp_components/cmake)
+[2.616s] -- Found sensor_msgs: 5.3.6 (/opt/ros/jazzy/share/sensor_msgs/cmake)
+[2.697s] -- Found cv_bridge: 4.1.0 (/opt/ros/jazzy/share/cv_bridge/cmake)
+[2.721s] -- Found OpenCV: /usr (found version "4.6.0") found components: core highgui imgcodecs imgproc videoio 
+[2.998s] -- Configuring done (2.9s)
+[3.287s] -- Generating done (0.3s)
+[3.369s] -- Build files have been written to: /home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros
+[3.375s] Invoked command in '/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/ubuntu/ASDfR/cam2image_vm2ros -DCMAKE_INSTALL_PREFIX=/home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros
+[3.381s] Invoking command in '/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros -- -j10 -l10
+[3.505s] [ 40%] [32mBuilding CXX object CMakeFiles/cam2image_vm2ros.dir/src/cam2image.cpp.o[0m
+[3.507s] [ 40%] [32mBuilding CXX object CMakeFiles/cam2image_vm2ros.dir/src/remote_capture.cpp.o[0m
+[3.509s] [ 60%] [32mBuilding CXX object CMakeFiles/cam2image.dir/rclcpp_components/node_main_cam2image.cpp.o[0m
+[5.393s] [ 80%] [32m[1mLinking CXX executable cam2image[0m
+[5.615s] [ 80%] Built target cam2image
+[11.105s] [100%] [32m[1mLinking CXX shared library libcam2image_vm2ros.so[0m
+[12.478s] [100%] Built target cam2image_vm2ros
+[12.496s] Invoked command in '/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros -- -j10 -l10
+[12.515s] Invoking command in '/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros
+[12.524s] -- Install configuration: ""
+[12.534s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/lib/cam2image_vm2ros/cam2image
+[12.559s] -- Set non-toolchain portion of runtime path of "/home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/lib/cam2image_vm2ros/cam2image" to ""
+[12.563s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/lib/libcam2image_vm2ros.so
+[12.722s] -- Set non-toolchain portion of runtime path of "/home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/lib/libcam2image_vm2ros.so" to ""
+[12.725s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/include/cam2image_vm2ros
+[12.732s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/include/cam2image_vm2ros/remote_capture.hpp
+[12.743s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/include/cam2image_vm2ros/cam2image.hpp
+[12.755s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/include/cam2image_vm2ros/visibility_control.h
+[12.766s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/include/cam2image_vm2ros/base64.hpp
+[12.781s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/environment/library_path.sh
+[12.789s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/environment/library_path.dsv
+[12.806s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/ament_index/resource_index/package_run_dependencies/cam2image_vm2ros
+[12.821s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/ament_index/resource_index/parent_prefix_path/cam2image_vm2ros
+[12.832s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/environment/ament_prefix_path.sh
+[12.842s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/environment/ament_prefix_path.dsv
+[12.854s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/environment/path.sh
+[12.862s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/environment/path.dsv
+[12.875s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/local_setup.bash
+[12.885s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/local_setup.sh
+[12.897s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/local_setup.zsh
+[12.909s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/local_setup.dsv
+[12.919s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/package.dsv
+[12.933s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/ament_index/resource_index/packages/cam2image_vm2ros
+[12.946s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/ament_index/resource_index/rclcpp_components/cam2image_vm2ros
+[12.960s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/cmake/cam2image_vm2rosExport.cmake
+[12.971s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/cmake/cam2image_vm2rosExport-noconfig.cmake
+[12.983s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/cmake/ament_cmake_export_libraries-extras.cmake
+[12.994s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/cmake/ament_cmake_export_targets-extras.cmake
+[13.004s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/cmake/ament_cmake_export_dependencies-extras.cmake
+[13.016s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/cmake/cam2image_vm2rosConfig.cmake
+[13.028s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/cmake/cam2image_vm2rosConfig-version.cmake
+[13.040s] -- Installing: /home/ubuntu/ASDfR/cam2image_vm2ros/install/cam2image_vm2ros/share/cam2image_vm2ros/package.xml
+[13.052s] Invoked command in '/home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/ubuntu/ASDfR/cam2image_vm2ros/build/cam2image_vm2ros
