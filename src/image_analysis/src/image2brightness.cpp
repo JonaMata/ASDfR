@@ -10,15 +10,15 @@
 using namespace std::chrono_literals;
 using std::placeholders::_1;
 
-class BrightnessChecker : public rclcpp::Node
+class Image2Brightness : public rclcpp::Node
 {
   public:
-    BrightnessChecker()
-    : Node("brightness_checker")
+    Image2Brightness()
+    : Node("image2brightness")
     {
       this->declare_parameter<int>("threshold", 128);
       subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-      "image", 10, std::bind(&BrightnessChecker::topic_callback, this, _1));
+      "image", 10, std::bind(&Image2Brightness::topic_callback, this, _1));
       publisher_ = this->create_publisher<std_msgs::msg::Bool>("light_on", 10);
     }
 
@@ -49,9 +49,7 @@ class BrightnessChecker : public rclcpp::Node
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  // rclcpp::spin(std::make_shared<MinimalPublisher>());
-  // rclcpp::spin(std::make_shared<MinimalSubscriber>());
-  rclcpp::spin(std::make_shared<BrightnessChecker>());
+  rclcpp::spin(std::make_shared<Image2Brightness>());
   rclcpp::shutdown();
   return 0;
 }
