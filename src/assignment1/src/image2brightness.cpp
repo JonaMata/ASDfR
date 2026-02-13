@@ -10,9 +10,6 @@
 using namespace std::chrono_literals;
 using std::placeholders::_1;
 
-/* This example creates a subclass of Node and uses std::bind() to register a
-* member function as a callback from the timer. */
-
 class BrightnessChecker : public rclcpp::Node
 {
   public:

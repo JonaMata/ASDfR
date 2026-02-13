@@ -8,7 +8,14 @@
 #include <utility>
 #include <vector>
 
-#include "cv_bridge/cv_bridge.hpp"
+// Include check for cv_bridge. Ubuntu 22 is .h, Ubuntu 24 is .hpp
+#if __has_include(<cv_bridge/cv_bridge.hpp>)
+    #include <cv_bridge/cv_bridge.hpp>
+#elif __has_include(<cv_bridge/cv_bridge.h>)
+    #include <cv_bridge/cv_bridge.h>
+#else
+    #error "Required cv_bridge header file not found"
+#endif
 
 #include <boost/asio.hpp>
 
@@ -48,6 +55,8 @@ namespace cam2image_vm2ros
         rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
         rclcpp::TimerBase::SharedPtr timer_;
 
+        rclcpp::Clock clock_;
+
         // ROS parameters
         bool show_camera_;
         size_t depth_;
@@ -70,6 +79,9 @@ namespace cam2image_vm2ros
 
         bool is_flipped_;
         size_t publish_number_;
+
+        bool rotate_;
+        double throttle_rate_;
     };
 
 } // namespace cam2image_vm2ros
