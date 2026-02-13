@@ -10,6 +10,19 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(example_interfaces REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
+add_executable(sequence_controller src/sequence_controller.cpp)
+ament_target_dependencies(sequence_controller rclcpp example_interfaces sensor_msgs)
+target_include_directories(sequence_controller PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+target_compile_features(sequence_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+install(TARGETS sequence_controller
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

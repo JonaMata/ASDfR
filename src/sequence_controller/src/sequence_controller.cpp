@@ -27,8 +27,8 @@ class SequenceController : public rclcpp::Node
       rightPublisher_ = this->create_publisher<example_interfaces::msg::Float64>("output/right_motor/setpoint_vel", 10);
 
       timer_ = create_wall_timer(
-      std::chrono::seconds(2),
-      [this]() { sequence_step(); });
+        std::chrono::seconds(2),
+        [this]() { sequence_step(); });
     }
 
   private:

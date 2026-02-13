@@ -14,5 +14,8 @@
 
   <export>
     <build_type>ament_cmake</build_type>
+    <depend>rclcpp</depend>
+    <depend>example_interfaces</depend>
+    <depend>sensor_msgs</depend>
   </export>
 </package>
