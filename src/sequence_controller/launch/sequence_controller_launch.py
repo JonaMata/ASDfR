@@ -6,9 +6,9 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
 
     config = os.path.join(
-        get_package_share_directory('cam2image_vm2ros'),
+        get_package_share_directory('sequence_controller'),
         'config',
-        'cam2image_config.yaml'
+        'cam2image.yaml'
     )
 
     cam2image = Node(
@@ -45,6 +45,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        cam2image,
         sequence_controller,
         relbot_adapter,
         relbot_simulator,
