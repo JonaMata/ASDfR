@@ -21,7 +21,14 @@ target_include_directories(sequence_controller PUBLIC
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 target_compile_features(sequence_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS sequence_controller
+add_executable(object_tracker src/object_tracker.cpp)
+ament_target_dependencies(object_tracker rclcpp example_interfaces sensor_msgs)
+target_include_directories(object_tracker PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+target_compile_features(object_tracker PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+install(TARGETS sequence_controller object_tracker
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch

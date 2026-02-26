@@ -8,7 +8,7 @@ def generate_launch_description():
     config = os.path.join(
         get_package_share_directory('sequence_controller'),
         'config',
-        'config.yaml'
+        'config_simple.yaml'
     )
 
     cam2image = Node(
@@ -18,14 +18,24 @@ def generate_launch_description():
         parameters=[config],
     )
 
-    sequence_controller = Node(
+    object_position = Node(
+        package='image_analysis',
+        executable='object_position',
+        name='object_position',
+        remappings=[
+            ('/output/object_position', '/input/object_position'),
+        ]
+    )
+
+    object_tracker_simple = Node(
         package='sequence_controller',
-        executable='sequence_controller',
-        name='sequence_controller',
+        executable='object_tracker_simple',
+        name='object_tracker_simple',
         remappings=[
             ('/output/left_motor/setpoint_vel', '/input/left_motor/setpoint_vel'),
             ('/output/right_motor/setpoint_vel', '/input/right_motor/setpoint_vel'),
-        ]
+        ],
+        parameters=[config],
     )
 
     relbot_adapter = Node(
@@ -46,7 +56,8 @@ def generate_launch_description():
 
     return LaunchDescription([
         cam2image,
-        sequence_controller,
+        object_position,
+        object_tracker_simple,
         relbot_adapter,
         relbot_simulator,
     ])

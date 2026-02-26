@@ -17,7 +17,7 @@ public:
         this->declare_parameter<int>("threshold", 128);
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
             "image", 10, std::bind(&ObjectPosition::topic_callback, this, _1));
-        publisher_ = this->create_publisher<geometry_msgs::msg::Point>("object_position", 10);
+        publisher_ = this->create_publisher<geometry_msgs::msg::Point>("output/object_position", 10);
     }
 
 private:
@@ -25,7 +25,6 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr publisher_;
 
     void topic_callback(const sensor_msgs::msg::Image& msg) const {
-        RCLCPP_INFO(this->get_logger(), "Received Image");
         int total_pixels = msg.width * msg.height;
         // bool thresholded[total_pixels];
         int threshold = this->get_parameter("threshold").as_int();
@@ -42,8 +41,8 @@ private:
             }
         }
 
-        int x = 0;
-        int y = 0;
+        int x = -1;
+        int y = -1;
         if (total_above_threshold != 0) {
             x = sum_x / total_above_threshold - 1;
             y = sum_y / total_above_threshold - 1;
@@ -52,7 +51,7 @@ private:
         auto message = geometry_msgs::msg::Point();
         message.x = x;
         message.y = y;
-        RCLCPP_INFO(this->get_logger(), "Publishing: x='%d', y='%d'", x, y);
+        // RCLCPP_INFO(this->get_logger(), "Publishing: x='%d', y='%d'", x, y);
         publisher_->publish(message);
     }
 };
