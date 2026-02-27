@@ -12,7 +12,11 @@ def generate_launch_description():
         remappings=[
             ('/output/left_motor/setpoint_vel', '/input/left_motor/setpoint_vel'),
             ('/output/right_motor/setpoint_vel', '/input/right_motor/setpoint_vel'),
-        ]
+        ],
+        parameters=[{
+            'left_waypoints': [0.0, 1.0, 0.0, -1.0],
+            'right_waypoints': [0.0, 1.0, 0.0, -1.0],
+        }]
     )
 
     relbot_adapter = Node(

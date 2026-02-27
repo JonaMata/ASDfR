@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(sequence_controller)
+project(object_tracker)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -14,14 +14,14 @@ find_package(rclcpp REQUIRED)
 find_package(example_interfaces REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
-add_executable(sequence_controller src/sequence_controller.cpp)
-ament_target_dependencies(sequence_controller rclcpp example_interfaces sensor_msgs)
-target_include_directories(sequence_controller PUBLIC
+add_executable(object_tracker src/object_tracker.cpp)
+ament_target_dependencies(object_tracker rclcpp example_interfaces sensor_msgs)
+target_include_directories(object_tracker PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
-target_compile_features(sequence_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(object_tracker PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS sequence_controller
+install(TARGETS object_tracker
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch

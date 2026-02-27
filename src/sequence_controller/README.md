@@ -32,8 +32,8 @@ For using object tracking:
 
 ### Parameters
 bool `track_object` : Sets if the controller should track an object or use the setpoint lists.
-vector<double> `left_waypoints: A list of velocity waypoints for the left motor
-vector<double> `right_waypoints: A list of velocity waypoints for the right motor
+vector<double> `left_waypoints`: A list of velocity waypoints for the left motor
+vector<double> `right_waypoints`: A list of velocity waypoints for the right motor
 
 
 ### Core components 

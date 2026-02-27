@@ -36,6 +36,7 @@ private:
     RCLCPP_INFO(this->get_logger(), "Average brightness: '%d'", avg_brightness);
 
     bool light_on = avg_brightness > threshold;
+    RCLCPP_INFO(this->get_logger(), "Current threshold: '%d'", threshold);
 
     auto message = std_msgs::msg::Bool();
     message.data = light_on;
