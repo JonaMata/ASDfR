@@ -20,9 +20,15 @@ This package implements a sequence controller that can either use a predefined l
         Type: example_interfaces/msg/Float64
 
 ### Run
-In a terminal run the following commands:
+In a terminal run one of the following sets of commands:
+
+For using a setpoints list:
 `ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/cam2image_vm2ros/config/cam2image.yaml`  
-`ros2 run object_position object_position`
+`ros2 launch sequence_controller sequence_controller_launch.py`
+
+For using object tracking:
+`ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/cam2image_vm2ros/config/cam2image.yaml`  
+`ros2 launch sequence_controller object_tracker_simple_launch.py`
 
 ### Parameters
 bool `track_object` : Sets if the controller should track an object or use the setpoint lists.

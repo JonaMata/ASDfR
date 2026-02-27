@@ -16,11 +16,17 @@ def generate_launch_description():
 
     object_tracker_simple = Node(
         package='sequence_controller',
-        executable='object_tracker_simple',
-        name='object_tracker_simple',
+        executable='sequence_controller',
+        name='sequence_controller',
         remappings=[
             ('/output/left_motor/setpoint_vel', '/input/left_motor/setpoint_vel'),
             ('/output/right_motor/setpoint_vel', '/input/right_motor/setpoint_vel'),
+        ],
+        parameters=[
+            {
+                'track_object': True,
+                'tau': 10.0,
+            }
         ],
     )
 

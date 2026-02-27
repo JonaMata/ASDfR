@@ -22,7 +22,11 @@ def generate_launch_description():
         remappings=[
             ('/output/motor_cmd', '/input/motor_cmd'),
             ('/input/twist', '/keyboard/twist'),
-        ]
+        ],
+        parameters=[{
+            'track_object': False,
+            'tau': 10.0,
+        }],
     )
 
     relbot_simulator = Node(
