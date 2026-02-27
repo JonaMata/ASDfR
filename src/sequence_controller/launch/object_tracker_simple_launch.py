@@ -52,6 +52,9 @@ def generate_launch_description():
         package='relbot_simulator',
         executable='relbot_simulator',
         name='relbot_simulator',
+        remappings=[
+            ('/output/camera_position', '/input/camera_position'),
+        ],
     )
 
     return LaunchDescription([

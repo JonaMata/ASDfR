@@ -7,6 +7,7 @@
 #include "example_interfaces/msg/float64.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "geometry_msgs/msg/point.hpp"
+#include "geometry_msgs/msg/point_stamped.hpp"
 
 using namespace std::chrono_literals;
 using std::placeholders::_1;
@@ -17,25 +18,42 @@ public:
         width = this->declare_parameter("width", 1);
         height = this->declare_parameter("height", 1);
         objectPosition_sub = this->create_subscription<geometry_msgs::msg::Point>("input/object_position", 10,
-            std::bind(&ObjectTracker::topic_callback, this, _1));
+            std::bind(&ObjectTracker::objectPosition_callback, this, _1));
+        cameraPosition_sub = this->create_subscription<geometry_msgs::msg::PointStamped>("input/camera_position", 10,
+            std::bind(&ObjectTracker::cameraPosition_callback, this, _1));
         left_pub = this->create_publisher<example_interfaces::msg::Float64>("output/left_motor/setpoint_vel", 10);
         right_pub = this->create_publisher<example_interfaces::msg::Float64>("output/right_motor/setpoint_vel", 10);
     }
 
 private:
     rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr objectPosition_sub;
+    rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr cameraPosition_sub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr left_pub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr right_pub;
     int width;
     int height;
+    double object_x = 0, object_y = 0, camera_x = 0, camera_y = 0;
 
-    void topic_callback(const geometry_msgs::msg::Point::SharedPtr point) {
+    void objectPosition_callback(const geometry_msgs::msg::Point::SharedPtr point) {
+        object_x = point->x;
+        object_y = point->y;
+        send_setpoint();
+    }
+
+    void cameraPosition_callback(const geometry_msgs::msg::PointStamped::SharedPtr point) {
+        camera_x = point->point.x;
+        camera_y = point->point.y;
+        send_setpoint();
+    }
+
+    void send_setpoint() {
         // Get next waypoint
-        int offset = point->x - width/2;
-        int target = 0;
+        double error = object_x - camera_x;
+        double target = -error / 10.0;
 
-        if (abs(offset) > 10) {
-            target = offset > 0 ? -1 : 1;
+        // Set velocity to 0 if no object is detected
+        if (object_x == -1) {
+            target = 0;
         }
 
         // Publish target
@@ -47,7 +65,7 @@ private:
         rightMsg.data = target;
         right_pub->publish(rightMsg);
 
-        RCLCPP_INFO(get_logger(), "x diff: %d", target);
+        RCLCPP_INFO(get_logger(), "x diff: %f", target);
     }
 };
 
