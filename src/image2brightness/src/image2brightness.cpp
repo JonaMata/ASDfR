@@ -35,8 +35,10 @@ private:
     int avg_brightness = total_brightness / (total_pixels * 3);
     RCLCPP_INFO(this->get_logger(), "Average brightness: '%d'", avg_brightness);
 
-    bool light_on = avg_brightness > threshold;
+    this->get_parameter("threshold").as_int();
     RCLCPP_INFO(this->get_logger(), "Current threshold: '%d'", threshold);
+
+    bool light_on = avg_brightness > threshold;
 
     auto message = std_msgs::msg::Bool();
     message.data = light_on;

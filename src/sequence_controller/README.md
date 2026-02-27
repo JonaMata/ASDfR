@@ -38,6 +38,4 @@ vector<double> `right_waypoints`: A list of velocity waypoints for the right mot
 
 ### Core components 
 * `sequence_step()`: Publishes the next setpoint from the setpoint lists, called by a timer.
-* `objectPosition_callback()`: Updates the object position and calls calc_setpoint().
-* `cameraPosition_callback()`: Updates the camera position and calls calc_setpoint().
-* `calc_setpoint()`: Calculate the error and use that to calculate and publish a setpoint.
+* `topic_callback()`: Receive the object position, calculate the error and set the new setpoint.

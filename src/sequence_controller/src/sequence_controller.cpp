@@ -28,9 +28,7 @@ public:
 
         if (track_object) {
             objectPosition_sub = this->create_subscription<geometry_msgs::msg::Point>("input/object_position", 10,
-                std::bind(&SequenceController::objectPosition_callback, this, _1));
-            cameraPosition_sub = this->create_subscription<geometry_msgs::msg::PointStamped>("input/camera_position", 10,
-                std::bind(&SequenceController::cameraPosition_callback, this, _1));
+                std::bind(&SequenceController::topic_callback, this, _1));
         } else {
             timer_ = create_wall_timer(
             std::chrono::seconds(2),
@@ -44,23 +42,15 @@ public:
 private:
 
     rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr objectPosition_sub;
-    rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr cameraPosition_sub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr left_pub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr right_pub;
     rclcpp::TimerBase::SharedPtr timer_;
     std::vector<double> leftWaypoints_;
     std::vector<double> rightWaypoints_;
     size_t current_step_;
-    double object_x = 0, object_y = 0, camera_x = 0, camera_y = 0;
     double tau;
 
     void sequence_step() {
-        //   if (current_step_ >= leftWaypoints_.size()) {
-        //   // RCLCPP_INFO(get_logger(), "Mission complete! Final position: %.2f", current_position_);
-        //   timer_->cancel();  // Stop mission
-        //   return;
-        // }
-
         // Get next waypoint
         double leftTarget = leftWaypoints_[current_step_ % leftWaypoints_.size()];
         double rightTarget = rightWaypoints_[current_step_ % rightWaypoints_.size()];
@@ -74,44 +64,28 @@ private:
         rightMsg.data = rightTarget;
         right_pub->publish(rightMsg);
 
-        // RCLCPP_INFO(get_logger(), "Mission step %zu/%zu: Target = %.1f (current pos: %.2f)", 
-        //             current_step_ + 1, waypoints_.size(), target, current_position_);
-
         current_step_++;
     }
 
-    void objectPosition_callback(const geometry_msgs::msg::Point::SharedPtr point) {
-        object_x = point->x;
-        object_y = point->y;
-        calc_setpoint();
-    }
-
-    void cameraPosition_callback(const geometry_msgs::msg::PointStamped::SharedPtr point) {
-        camera_x = point->point.x;
-        camera_y = point->point.y;
-        calc_setpoint();
-    }
-
-    void calc_setpoint() {
-        // Get next waypoint
-        double error = object_x - camera_x;
-        double target = -error / tau;
-
-        // Set velocity to 0 if no object is detected
-        if (object_x == -1) {
-            target = 0;
+    void topic_callback(const geometry_msgs::msg::Point::SharedPtr point) {
+        // Get next setpoint
+        // Clamp here so it's not absurdly fast
+        double setpoint = std::clamp(-point->x * tau, -2.0, 2.0);
+        // Dead zone in the center so it doesn't twitch when viewing the object nearly directly
+        if (std::abs(setpoint) < 0.5) {
+            setpoint = 0;
         }
 
-        // Publish target
+        // Publish setpoint
         auto leftMsg = example_interfaces::msg::Float64();
-        leftMsg.data = target;
+        leftMsg.data = setpoint;
         left_pub->publish(leftMsg);
 
         auto rightMsg = example_interfaces::msg::Float64();
-        rightMsg.data = target;
+        rightMsg.data = setpoint;
         right_pub->publish(rightMsg);
 
-        RCLCPP_INFO(get_logger(), "x diff: %f", target);
+        RCLCPP_INFO(get_logger(), "setpoint=%.1f", setpoint);
     }
 };
 
