@@ -2,4 +2,6 @@
 log/
 install/
 build/
-cam2image.yaml
+
+*.yaml
+!*.example.yaml

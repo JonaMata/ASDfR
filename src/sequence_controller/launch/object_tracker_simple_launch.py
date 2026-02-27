@@ -6,26 +6,29 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
 
     object_position = Node(
-        package='image_analysis',
+        package='object_position',
         executable='object_position',
         name='object_position',
         remappings=[
             ('/output/object_position', '/input/object_position'),
-        ]
+        ],
+        parameters=[{
+            'from_center': True,
+            'threshold': 128
+        }]
     )
 
     object_tracker_simple = Node(
         package='sequence_controller',
-        executable='sequence_controller',
-        name='sequence_controller',
+        executable='object_tracker_simple',
+        name='object_tracker_simple',
         remappings=[
             ('/output/left_motor/setpoint_vel', '/input/left_motor/setpoint_vel'),
             ('/output/right_motor/setpoint_vel', '/input/right_motor/setpoint_vel'),
         ],
         parameters=[
             {
-                'track_object': True,
-                'tau': 10.0,
+                'tau': 0.1,
             }
         ],
     )

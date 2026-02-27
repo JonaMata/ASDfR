@@ -38,9 +38,10 @@ private:
         // double left = vel + rot;
         // double right = vel - rot;
 
-        double setpoint = error_x * tau;
+        // The setpoint is equal to the error multiplied by a factor tau to make it slower.
+        double setpoint = -error_x * tau;
 
-        // Publish target
+        // Publish setpoint
         auto leftMsg = example_interfaces::msg::Float64();
         leftMsg.data = setpoint;
         left_pub->publish(leftMsg);

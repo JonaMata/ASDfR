@@ -6,7 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
 
     object_position = Node(
-        package='image_analysis',
+        package='object_position',
         executable='object_position',
         name='object_position',
         remappings=[
@@ -14,7 +14,7 @@ def generate_launch_description():
             ('/output/object_position', '/input/object_position'),
         ],
         parameters=[{
-            'from_middle': True,
+            'from_center': True,
             'threshold': 128,
         }],
     )
@@ -27,6 +27,9 @@ def generate_launch_description():
             ('/output/left_motor/setpoint_vel', '/input/left_motor/setpoint_vel'),
             ('/output/right_motor/setpoint_vel', '/input/right_motor/setpoint_vel'),
         ],
+        parameters=[{
+            'tau': 0.1,
+        }],
     )
 
     relbot_adapter = Node(

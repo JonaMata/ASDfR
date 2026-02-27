@@ -105,7 +105,7 @@ void RELbotSimulator::dynamics_timer_callback()
 
   rclcpp::Duration duration = get_clock()->now() - clock_start;
 
-  RCLCPP_INFO_THROTTLE(this->get_logger(), clock, throttle_rate_, "Sim state!   [time, x,y, θz] = [%f, %f, %f, %f]", duration.seconds(), output_vector[2], output_vector[3], output_vector[4]);
+  // RCLCPP_INFO_THROTTLE(this->get_logger(), clock, throttle_rate_, "Sim state!   [time, x,y, θz] = [%f, %f, %f, %f]", duration.seconds(), output_vector[2], output_vector[3], output_vector[4]);
 
   // Output the actual position
   robot_pose_topic->publish(robot_pose);
