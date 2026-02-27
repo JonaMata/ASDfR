@@ -14,8 +14,6 @@ using std::placeholders::_1;
 class ObjectTracker : public rclcpp::Node {
 public:
     ObjectTracker() : Node("object_tracker") {
-        width = this->declare_parameter("width", 1);
-        height = this->declare_parameter("height", 1);
         tau = this->declare_parameter("tau", 1.0);
         objectPosition_sub = this->create_subscription<geometry_msgs::msg::Point>("input/object_position", 10,
             std::bind(&ObjectTracker::topic_callback, this, _1));
@@ -27,32 +25,34 @@ private:
     rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr objectPosition_sub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr left_pub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr right_pub;
-    int width;
-    int height;
     double tau;
 
     void topic_callback(const geometry_msgs::msg::Point::SharedPtr point) {
         // Get next waypoint
-        double error_x = point->x != -1 ? point->x - width / 2 : 0;
-        double error_y = point->y != -1 ? point->y - height / 2 : 0;
+        double error_x = point->x != -1 ? point->x : 0;
+        // double error_y = point->y != -1 ? point->y : 0;
 
-        double vel = 1 / tau * error_y;
-        double rot = 1 / tau * error_x;
+        // double vel = 1 / tau * error_y;
+        // double rot = 1 / tau * error_x;
 
-        double left = vel + rot;
-        double right = vel - rot;
+        // double left = vel + rot;
+        // double right = vel - rot;
+
+        double setpoint = error_x * tau;
 
         // Publish target
         auto leftMsg = example_interfaces::msg::Float64();
-        leftMsg.data = left;
+        leftMsg.data = setpoint;
         left_pub->publish(leftMsg);
 
         auto rightMsg = example_interfaces::msg::Float64();
-        rightMsg.data = right;
+        rightMsg.data = setpoint;
         right_pub->publish(rightMsg);
 
-        RCLCPP_INFO(get_logger(), "vel: %.1f, rot: %.1f, left: %.1f, right: %.1f, error_x: %.1f, error_y: %.1f",
-            vel, rot, left, right, error_x, error_y);
+        // RCLCPP_INFO(get_logger(), "vel: %.1f, rot: %.1f, left: %.1f, right: %.1f, error_x: %.1f, error_y: %.1f",
+        //     vel, rot, left, right, error_x, error_y);
+        RCLCPP_INFO(get_logger(), "setpoint: %.1f, error_x: %.1f",
+            setpoint, error_x);
     }
 };
 

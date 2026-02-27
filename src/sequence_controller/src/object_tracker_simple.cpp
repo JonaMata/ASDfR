@@ -12,15 +12,13 @@
 using namespace std::chrono_literals;
 using std::placeholders::_1;
 
-class ObjectTracker : public rclcpp::Node {
+class ObjectTrackerSimple : public rclcpp::Node {
 public:
-    ObjectTracker() : Node("object_tracker") {
-        width = this->declare_parameter("width", 1);
-        height = this->declare_parameter("height", 1);
+    ObjectTrackerSimple() : Node("object_tracker_simple") {
         objectPosition_sub = this->create_subscription<geometry_msgs::msg::Point>("input/object_position", 10,
-            std::bind(&ObjectTracker::objectPosition_callback, this, _1));
+            std::bind(&ObjectTrackerSimple::objectPosition_callback, this, _1));
         cameraPosition_sub = this->create_subscription<geometry_msgs::msg::PointStamped>("input/camera_position", 10,
-            std::bind(&ObjectTracker::cameraPosition_callback, this, _1));
+            std::bind(&ObjectTrackerSimple::cameraPosition_callback, this, _1));
         left_pub = this->create_publisher<example_interfaces::msg::Float64>("output/left_motor/setpoint_vel", 10);
         right_pub = this->create_publisher<example_interfaces::msg::Float64>("output/right_motor/setpoint_vel", 10);
     }
@@ -30,8 +28,6 @@ private:
     rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr cameraPosition_sub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr left_pub;
     rclcpp::Publisher<example_interfaces::msg::Float64>::SharedPtr right_pub;
-    int width;
-    int height;
     double object_x = 0, object_y = 0, camera_x = 0, camera_y = 0;
 
     void objectPosition_callback(const geometry_msgs::msg::Point::SharedPtr point) {
@@ -71,7 +67,7 @@ private:
 
 int main(int argc, char* argv[]) {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<ObjectTracker>());
+    rclcpp::spin(std::make_shared<ObjectTrackerSimple>());
     rclcpp::shutdown();
     return 0;
 }

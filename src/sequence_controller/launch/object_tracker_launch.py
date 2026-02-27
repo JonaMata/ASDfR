@@ -25,7 +25,11 @@ def generate_launch_description():
         remappings=[
             ('/image', '/output/moving_camera'),
             ('/output/object_position', '/input/object_position'),
-        ]
+        ],
+        parameters=[{
+            'from_middle': True,
+            'threshold': 128,
+        }],
     )
 
     object_tracker = Node(

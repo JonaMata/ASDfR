@@ -15,6 +15,7 @@ public:
     ObjectPosition()
         : Node("object_position") {
         this->declare_parameter<int>("threshold", 128);
+        fromMiddle = this->declare_parameter<bool>("from_middle", false);
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
             "image", 10, std::bind(&ObjectPosition::topic_callback, this, _1));
         publisher_ = this->create_publisher<geometry_msgs::msg::Point>("output/object_position", 10);
@@ -23,6 +24,8 @@ public:
 private:
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
     rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr publisher_;
+
+    bool fromMiddle;
 
     void topic_callback(const sensor_msgs::msg::Image& msg) const {
         int total_pixels = msg.width * msg.height;
@@ -46,6 +49,10 @@ private:
         if (total_above_threshold != 0) {
             x = sum_x / total_above_threshold - 1;
             y = sum_y / total_above_threshold - 1;
+            if (fromMiddle) {
+                x -= msg.width / 2;
+                y -= msg.height / 2;
+            }
         }
 
         auto message = geometry_msgs::msg::Point();
