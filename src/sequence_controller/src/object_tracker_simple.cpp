@@ -31,7 +31,7 @@ private:
 
     void topic_callback(const geometry_msgs::msg::Point::SharedPtr point) {
         // Get next setpoint
-        // Clamp here because relbot_simulator clamping doesn't work well for extremely error values for some reason
+        // Clamp here so it's not absurdly fast
         double setpoint = std::clamp(-point->x * tau, -2.0, 2.0);
         // Dead zone in the center so it doesn't twitch when viewing the object nearly directly
         if (std::abs(setpoint) < 0.5) {
