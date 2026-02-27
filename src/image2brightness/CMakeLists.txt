@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(image_analysis)
+project(image2brightness)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -13,7 +13,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
 
 add_executable(image2brightness src/image2brightness.cpp)
 ament_target_dependencies(image2brightness rclcpp std_msgs sensor_msgs)
@@ -22,15 +21,7 @@ target_include_directories(image2brightness PUBLIC
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 target_compile_features(image2brightness PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-add_executable(object_position src/object_position.cpp)
-ament_target_dependencies(object_position rclcpp sensor_msgs geometry_msgs)
-target_include_directories(object_position PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
-target_compile_features(object_position PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-
-
-install(TARGETS image2brightness object_position
+install(TARGETS image2brightness
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
