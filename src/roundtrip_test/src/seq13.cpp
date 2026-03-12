@@ -11,8 +11,8 @@ using namespace std::chrono_literals;
 using std::placeholders::_1;
 
 struct result {
-    long start;
-    long end;
+    unsigned long start;
+    unsigned long end;
 };
 
 class Seq13 : public rclcpp::Node {
@@ -90,7 +90,7 @@ private:
 
         // long global_start = results[0].start;
 
-        long total_roundtrip = 0;
+        unsigned long total_roundtrip = 0;
 
         for(unsigned int i = 0; i < results.size(); i++) {
             total_roundtrip += results[i].end - results[i].start;
@@ -111,6 +111,7 @@ private:
             // RCLCPP_INFO(this->get_logger(), "%d \t %d \t %d", jitter, roundtrip, roundtrip_jitter);
             file << jitter << "," << roundtrip << "," << roundtrip_jitter << "\n";
         }
+        file.close();
 
         RCLCPP_INFO(this->get_logger(), "Finished");
 
@@ -118,10 +119,10 @@ private:
     }
 
     void topic_callback(const std_msgs::msg::Int64::SharedPtr msg) {
-        long start_time = msg->data;
+        unsigned long start_time = msg->data;
         timespec time;
         clock_gettime(CLOCK_MONOTONIC, &time);
-        long end_time = time.tv_nsec;
+        unsigned long end_time = time.tv_nsec;
         results.push_back({start_time, end_time});
     }
 };
