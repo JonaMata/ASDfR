@@ -90,7 +90,7 @@ private:
 
         // long global_start = results[0].start;
 
-        unsigned long total_roundtrip = 0;
+        unsigned long long total_roundtrip = 0;
 
         for(unsigned int i = 0; i < results.size(); i++) {
             total_roundtrip += results[i].end - results[i].start;
