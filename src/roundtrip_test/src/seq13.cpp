@@ -31,8 +31,8 @@ public:
         timer_create(CLOCK_MONOTONIC, &sev, &timer);
 
         itimerspec its{};
-        its.it_value.tv_nsec = 10000000;
-        its.it_interval.tv_nsec = 10000000;
+        its.it_value.tv_nsec = 1e6;
+        its.it_interval.tv_nsec = 1e6;
 
         RCLCPP_INFO(this->get_logger(), "Starting timer");
         timer_settime(timer, 0, &its, nullptr);
@@ -105,7 +105,7 @@ private:
         for(unsigned int i = 0; i < results.size(); i++) {
             result res = results[i];
             // int jitter = res.start - global_start - i * 10000000;
-            int jitter = i == 0 ? 0 : res.start - results[i-1].start - 10000000;
+            int jitter = i == 0 ? 0 : res.start - results[i-1].start - 1e6;
             int roundtrip = res.end - res.start;
             int roundtrip_jitter = roundtrip - average_roundtrip;
             // RCLCPP_INFO(this->get_logger(), "%d \t %d \t %d", jitter, roundtrip, roundtrip_jitter);
