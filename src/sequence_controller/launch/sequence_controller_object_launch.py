@@ -20,14 +20,15 @@ def generate_launch_description():
 
     object_tracker_simple = Node(
         package='sequence_controller',
-        executable='object_tracker_simple',
-        name='object_tracker_simple',
+        executable='sequence_controller',
+        name='sequence_controller',
         remappings=[
             ('/output/left_motor/setpoint_vel', '/input/left_motor/setpoint_vel'),
             ('/output/right_motor/setpoint_vel', '/input/right_motor/setpoint_vel'),
         ],
         parameters=[
             {
+                'track_object': True,
                 'tau': 0.1,
             }
         ],
@@ -47,9 +48,6 @@ def generate_launch_description():
         package='relbot_simulator',
         executable='relbot_simulator',
         name='relbot_simulator',
-        remappings=[
-            ('/output/camera_position', '/input/camera_position'),
-        ],
     )
 
     return LaunchDescription([
