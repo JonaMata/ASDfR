@@ -69,7 +69,7 @@ private:
         timespec time;
         clock_gettime(CLOCK_MONOTONIC, &time);
         auto msg = std_msgs::msg::Int64();
-        msg.data = time.tv_nsec;
+        msg.data = time.tv_sec * 1e9 + time.tv_nsec;
         pub->publish(msg);
     }
 
@@ -92,7 +92,7 @@ private:
 
         unsigned long long total_roundtrip = 0;
 
-        for(unsigned int i = 0; i < results.size(); i++) {
+        for (unsigned int i = 0; i < results.size(); i++) {
             total_roundtrip += results[i].end - results[i].start;
         }
         int average_roundtrip = total_roundtrip / results.size();
@@ -102,7 +102,7 @@ private:
 
         // RCLCPP_INFO(this->get_logger(), "Jitter \t Roundtrip \t Roundtrip Jitter");
 
-        for(unsigned int i = 0; i < results.size(); i++) {
+        for (unsigned int i = 0; i < results.size(); i++) {
             result res = results[i];
             file << res.start << "," << res.end << "\n";
         }
@@ -117,8 +117,8 @@ private:
         unsigned long start_time = msg->data;
         timespec time;
         clock_gettime(CLOCK_MONOTONIC, &time);
-        unsigned long end_time = time.tv_nsec;
-        results.push_back({start_time, end_time});
+        unsigned long end_time = time.tv_sec * 1e9 + time.tv_nsec;
+        results.push_back({ start_time, end_time });
     }
 };
 
