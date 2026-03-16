@@ -65,21 +65,21 @@ int main() {
         its.it_interval.tv_nsec = 1e6;
         its.it_value.tv_sec = 0;
         its.it_value.tv_nsec = 1e6;
-        
+
         timer_create(CLOCK_MONOTONIC, &sev, &timer_id);
-        
+
         timer_settime(timer_id, 0, &its, nullptr);
-        
+
         // create a sigset for sigwait to wait for SIGUSR1
         sigset_t sigset;
         sigemptyset(&sigset);
         sigaddset(&sigset, SIGUSR1);
-        
+
         while (times.size() < ITERATIONS) {
             int sig;
             sigwait(&sigset, &sig);
             loop();
-            if (times.size() % (ITERATIONS/10) == 0) {
+            if (times.size() % (ITERATIONS / 10) == 0) {
                 std::cout << times.size() << "\n";
             }
         }
