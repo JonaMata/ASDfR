@@ -1,66 +1,193 @@
-	#include <evl/thread.h>
-	#include <evl/timer.h>
-	#include <evl/clock.h>
-	#include <evl/proxy.h>
+#include <signal.h>
+#include <iostream>
+#include <fstream>
+#include <pthread.h>
+#include <time.h>
+#include <cmath>
+#include <list>
 
-	void timespec_add_ns(struct timespec *__restrict r,
+
+
+
+#include <evl/thread.h>
+#include <evl/timer.h>
+#include <evl/clock.h>
+#include <evl/proxy.h>
+
+const int ITERATIONS = 1000;
+const int COMPUTATIONS = 1000;
+
+std::list<long> times = {};
+std::list<long> elapsed = {};
+std::list<long> compute = {};
+long last_t_usec = 0;
+long avg_elapsed = 0;
+
+// void loop(int sig, siginfo_t* si, void* v) {
+void loop() {
+    struct timespec start, end;
+    evl_read_clock(EVL_CLOCK_MONOTONIC, &start);
+
+    // computation
+    double x = 0;
+    for (int j = 0; j < COMPUTATIONS; j++) {
+        x += std::sin(j) * std::cos(j);
+    }
+
+    evl_read_clock(EVL_CLOCK_MONOTONIC, &end);
+
+    // calculate time taken for computation
+    long elapsed_ns = (end.tv_sec - start.tv_sec) * 1e6 + (end.tv_nsec - start.tv_nsec) / 1e3;
+
+    // print time
+    struct timespec now;
+    // evl_read_clock(EVL_CLOCK_MONOTONIC, &now);
+    long t_usec = start.tv_sec * 1e6 + start.tv_nsec / 1e3;
+    if (last_t_usec != 0) {
+        times.push_back(t_usec);
+        elapsed.push_back(t_usec - last_t_usec);
+        compute.push_back(elapsed_ns);
+        avg_elapsed += t_usec - last_t_usec;
+    }
+    last_t_usec = t_usec;
+}
+
+void timespec_add_ns(struct timespec *__restrict r,
 	     		     const struct timespec *__restrict t,
 			     long ns)
-	{
-		long s, rem;
+{
+	long s, rem;
 
-		s = ns / 1000000000;
-		rem = ns - s * 1000000000;
-		r->tv_sec = t->tv_sec + s;
-		r->tv_nsec = t->tv_nsec + rem;
-		if (r->tv_nsec >= 1000000000) {
-		     r->tv_sec++;
-		     r->tv_nsec -= 1000000000;
-		}
+	s = ns / 1000000000;
+	rem = ns - s * 1000000000;
+	r->tv_sec = t->tv_sec + s;
+	r->tv_nsec = t->tv_nsec + rem;
+	if (r->tv_nsec >= 1000000000) {
+			r->tv_sec++;
+			r->tv_nsec -= 1000000000;
 	}
+}
 
-	int main(int argc, char *argv[])
-	{
+int main() {
+    pthread_t tid;
+
+    // create a signal mask so the SIGUSR1 is queued for the sigwait
+    sigset_t sigset;
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGUSR1);
+    pthread_sigmask(SIG_BLOCK, &sigset, nullptr);
+
+    pthread_create(&tid, nullptr, [](void*) -> void* {
 		struct itimerspec value, ovalue;
 		int tfd, tmfd, ret, n = 0;
 		struct timespec now;
 		__u64 ticks;
 
 		/* Attach to the core. */
-		tfd = evl_attach_self("periodic-timer:%d", getpid());
-		check_this_fd(tfd);
+		tfd = evl_attach_self("periodic-timer");
+		// check_this_fd(tfd);
 
 		/* Create a timer on the built-in monotonic clock. */
 		tmfd = evl_new_timer(EVL_CLOCK_MONOTONIC);
-		check_this_fd(tmfd);
+		// check_this_fd(tmfd);
 
 		/* Set up a 1 Hz periodic timer. */
 		ret = evl_read_clock(EVL_CLOCK_MONOTONIC, &now);
-		check_this_status(ret);
+		// check_this_status(ret);
 		/* EVL always uses absolute timeouts, add 1s to the current date */
-		timespec_add_ns(&value.it_value, &now, 1000000000ULL);
+		timespec_add_ns(&value.it_value, &now, 3000000000ULL);
 		value.it_interval.tv_sec = 0;
 		value.it_interval.tv_nsec = 1e6;
 		ret = evl_set_timer(tmfd, &value, &ovalue);
-		check_this_status(ret);
+		// evl_printf("ret=%d\n", ret);
+		// return 0;
+		// check_this_status(ret);
 
-		for (;;) {
-		    /* Wait for the next tick to be notified. */
+        while (times.size() < ITERATIONS) {
+			/* Wait for the next tick to be notified. */
 		    ret = oob_read(tmfd, &ticks, sizeof(ticks));
-		    check_this_status(ret);
-		    if (ticks > 1) {
-		       	      fprintf(stder, "timer overrun! %lld ticks late\n",
-			      	      ticks - 1);
-			      break;
-		    }
-		    evl_printf("TICKED, loops=%d\n", n++);
-		}
+
+		    // check_this_status(ret);
+		    // if (ticks > 1) {
+			// 	// loop();
+		    //    	      fprintf(stderr, "timer overrun! %lld ticks late\n",
+			//       	      ticks - 1);
+			//       break;
+		    // }
+		    // evl_printf("TICKED, loops=%d\n", n++);
+            if (ticks > 0) {
+            	loop();
+			}
+			// evl_printf("TICKS: %d\n", ticks);
+
+            // if (times.size() % (ITERATIONS / 10) == 0) {
+            //     std::cout << times.size() << "\n";
+            // }
+        }
 
 		/* Disable the timer (not required if closing). */
 		value.it_interval.tv_sec = 0;
 		value.it_interval.tv_nsec = 0;
 		ret = evl_set_timer(tmfd, &value, NULL);
-		check_this_status(ret);
+		// check_this_status(ret);
 
 		return 0;
-}
+
+
+
+
+
+
+
+
+        // timer_t timer_id;
+        // struct sigevent sev;
+        // sev.sigev_notify = SIGEV_SIGNAL;
+        // sev.sigev_signo = SIGUSR1;
+        // sev.sigev_value.sival_ptr = &timer_id;
+
+        // struct itimerspec its;
+        // its.it_interval.tv_sec = 0;
+        // its.it_interval.tv_nsec = 1e6;
+        // its.it_value.tv_sec = 0;
+        // its.it_value.tv_nsec = 1e6;
+
+        // timer_create(CLOCK_MONOTONIC, &sev, &timer_id);
+
+        // timer_settime(timer_id, 0, &its, nullptr);
+
+        // // create a sigset for sigwait to wait for SIGUSR1
+        // sigset_t sigset;
+        // sigemptyset(&sigset);
+        // sigaddset(&sigset, SIGUSR1);
+
+        // while (times.size() < ITERATIONS) {
+        //     int sig;
+        //     sigwait(&sigset, &sig);
+        //     loop();
+        //     if (times.size() % (ITERATIONS / 10) == 0) {
+        //         std::cout << times.size() << "\n";
+        //     }
+        // }
+
+        // return nullptr;
+        }, nullptr);
+
+    pthread_join(tid, nullptr);
+    std::cout << "Average elapsed: " << avg_elapsed / ITERATIONS << " us\n";
+
+    std::ofstream output("output.csv");
+    if (!output.is_open()) {
+        std::cout << "Failed to open output file\n";
+    } else {
+        output << "time,elapsed_time,compute_time\n";
+        auto t = times.begin();
+        auto e = elapsed.begin();
+        auto c = compute.begin();
+        for (; t != times.end() && e != elapsed.end() && c != compute.end(); ++t, ++e, ++c) {
+            output << *t << "," << *e << "," << *c << "\n";
+        }
+    }
+
+    return 0;
+}	

@@ -7,7 +7,7 @@
 #include <list>
 
 const int ITERATIONS = 1000;
-const int COMPUTATIONS = 10000;
+const int COMPUTATIONS = 1000;
 
 std::list<long> times = {};
 std::list<long> elapsed = {};
@@ -79,9 +79,9 @@ int main() {
             int sig;
             sigwait(&sigset, &sig);
             loop();
-            if (times.size() % (ITERATIONS / 10) == 0) {
-                std::cout << times.size() << "\n";
-            }
+            // if (times.size() % (ITERATIONS / 10) == 0) {
+            //     std::cout << times.size() << "\n";
+            // }
         }
 
         return nullptr;
