@@ -98,18 +98,13 @@ private:
         int average_roundtrip = total_roundtrip / results.size();
 
         std::ofstream file("seq13.csv");
-        file << "Jitter,Roundtrip,Roundtrip Jitter\n";
+        file << "start,end\n";
 
         // RCLCPP_INFO(this->get_logger(), "Jitter \t Roundtrip \t Roundtrip Jitter");
 
         for(unsigned int i = 0; i < results.size(); i++) {
             result res = results[i];
-            // int jitter = res.start - global_start - i * 10000000;
-            int jitter = i == 0 ? 0 : res.start - results[i-1].start - 1e6;
-            int roundtrip = res.end - res.start;
-            int roundtrip_jitter = roundtrip - average_roundtrip;
-            // RCLCPP_INFO(this->get_logger(), "%d \t %d \t %d", jitter, roundtrip, roundtrip_jitter);
-            file << jitter << "," << roundtrip << "," << roundtrip_jitter << "\n";
+            file << res.start << "," << res.end << "\n";
         }
         file.close();
 
