@@ -1,41 +1,38 @@
-Package sequence_controller
+Package roundtrip_test
 -----------------------------------------------
 ### Description 
-This package implements a sequence controller that can either use a predefined list of setpoints or track a position.
+This package implements two nodes to test the timing of roundtrip messaging between two ros2 nodes.
 
-### Inputs
-`/input/object_position`  
-        Type: geometry_msgs/msg/Point
-        Only used when track_object is set to true.  
+### Seq13 Node
 
-`/input/camera_position`  
-        Type: geometry_msgs/msg/PointStamped
-        Only used when track_object is set to true.
+#### Inputs
+`/roundtrip/end`  
+        Type: std_msgs/msg/Int64
 
-### Outputs
-`/output/left_motor/setpoint_vel`  
-        Type: example_interfaces/msg/Float64
+#### Outputs
+`/roundtrip/start`  
+        Type: std_msgs/msg/Int64
 
-`/output/right_motor/setpoint_vel`  
-        Type: example_interfaces/msg/Float64
+### Loop13 Node
+
+#### Inputs
+`/roundtrip/start`  
+        Type: std_msgs/msg/Int64
+
+#### Outputs
+`/roundtrip/end`  
+        Type: std_msgs/msg/Int64
+
+
 
 ### Run
-In a terminal run one of the following sets of commands:
+In a terminal the following sets of command:
 
-For using a setpoints list:
-`ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/cam2image_vm2ros/config/cam2image.yaml`  
-`ros2 launch sequence_controller sequence_controller_launch.py`
+`ros2 launch roundtrip_test roundtrip_test_launch.py`
 
-For using object tracking:
-`ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/cam2image_vm2ros/config/cam2image.yaml`  
-`ros2 launch sequence_controller object_tracker_simple_launch.py`
-
-### Parameters
-bool `track_object` : Sets if the controller should track an object or use the setpoint lists.
-vector<double> `left_waypoints`: A list of velocity waypoints for the left motor
-vector<double> `right_waypoints`: A list of velocity waypoints for the right motor
+This should result in a file called `seq13.csv` with the start and end times of each roundtrip message.
 
 
 ### Core components 
-* `sequence_step()`: Publishes the next setpoint from the setpoint lists, called by a timer.
-* `topic_callback()`: Receive the object position, calculate the error and set the new setpoint.
+* `Seq13()`: Publishes the current timestamp to `/roundtrip/start` on a timer interval. Receives on `/roundtrip/end` and stores the message and time of receiving.
+* `Loop13()`: Forwards messages received on `/roundtrip/start` to `/roundtrip/end`.

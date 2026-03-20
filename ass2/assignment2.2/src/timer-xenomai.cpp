@@ -1,27 +1,13 @@
-#include <signal.h>
-#include <iostream>
-#include <fstream>
-#include <pthread.h>
-#include <time.h>
-#include <cmath>
-#include <list>
+//=============================================================================
+// Authors : Jonathan Matarazzi, Lieuwe van den Berg
+// Group : 13
+// License : LGPL open source license
+//
+// Brief : A program that runs a computation on a 1kHz Xenomai timer interval and measures the iteration and computation times.
+//
+//=============================================================================
 
-
-
-
-#include <evl/thread.h>
-#include <evl/timer.h>
-#include <evl/clock.h>
-#include <evl/proxy.h>
-
-const int ITERATIONS = 1000;
-const int COMPUTATIONS = 1000;
-
-std::list<long> times = {};
-std::list<long> elapsed = {};
-std::list<long> compute = {};
-long last_t_usec = 0;
-long avg_elapsed = 0;
+#include "timer-xenomai.hpp"
 
 // void loop(int sig, siginfo_t* si, void* v) {
 void loop() {
@@ -71,11 +57,6 @@ void timespec_add_ns(struct timespec *__restrict r,
 int main() {
     pthread_t tid;
 
-    // create a signal mask so the SIGUSR1 is queued for the sigwait
-    sigset_t sigset;
-    sigemptyset(&sigset);
-    sigaddset(&sigset, SIGUSR1);
-    pthread_sigmask(SIG_BLOCK, &sigset, nullptr);
 
     pthread_create(&tid, nullptr, [](void*) -> void* {
 		struct itimerspec value, ovalue;
@@ -85,92 +66,34 @@ int main() {
 
 		/* Attach to the core. */
 		tfd = evl_attach_self("periodic-timer");
-		// check_this_fd(tfd);
 
 		/* Create a timer on the built-in monotonic clock. */
 		tmfd = evl_new_timer(EVL_CLOCK_MONOTONIC);
-		// check_this_fd(tmfd);
 
-		/* Set up a 1 Hz periodic timer. */
+		/* Set up a 1 kHz periodic timer. */
 		ret = evl_read_clock(EVL_CLOCK_MONOTONIC, &now);
-		// check_this_status(ret);
 		/* EVL always uses absolute timeouts, add 1s to the current date */
 		timespec_add_ns(&value.it_value, &now, 3000000000ULL);
 		value.it_interval.tv_sec = 0;
 		value.it_interval.tv_nsec = 1e6;
 		ret = evl_set_timer(tmfd, &value, &ovalue);
-		// evl_printf("ret=%d\n", ret);
-		// return 0;
-		// check_this_status(ret);
 
         while (times.size() < ITERATIONS) {
 			/* Wait for the next tick to be notified. */
 		    ret = oob_read(tmfd, &ticks, sizeof(ticks));
-
-		    // check_this_status(ret);
-		    // if (ticks > 1) {
-			// 	// loop();
-		    //    	      fprintf(stderr, "timer overrun! %lld ticks late\n",
-			//       	      ticks - 1);
-			//       break;
-		    // }
-		    // evl_printf("TICKED, loops=%d\n", n++);
             if (ticks > 0) {
             	loop();
 			}
-			// evl_printf("TICKS: %d\n", ticks);
-
-            // if (times.size() % (ITERATIONS / 10) == 0) {
-            //     std::cout << times.size() << "\n";
-            // }
         }
 
 		/* Disable the timer (not required if closing). */
 		value.it_interval.tv_sec = 0;
 		value.it_interval.tv_nsec = 0;
 		ret = evl_set_timer(tmfd, &value, NULL);
-		// check_this_status(ret);
 
 		return 0;
 
 
-
-
-
-
-
-
-        // timer_t timer_id;
-        // struct sigevent sev;
-        // sev.sigev_notify = SIGEV_SIGNAL;
-        // sev.sigev_signo = SIGUSR1;
-        // sev.sigev_value.sival_ptr = &timer_id;
-
-        // struct itimerspec its;
-        // its.it_interval.tv_sec = 0;
-        // its.it_interval.tv_nsec = 1e6;
-        // its.it_value.tv_sec = 0;
-        // its.it_value.tv_nsec = 1e6;
-
-        // timer_create(CLOCK_MONOTONIC, &sev, &timer_id);
-
-        // timer_settime(timer_id, 0, &its, nullptr);
-
-        // // create a sigset for sigwait to wait for SIGUSR1
-        // sigset_t sigset;
-        // sigemptyset(&sigset);
-        // sigaddset(&sigset, SIGUSR1);
-
-        // while (times.size() < ITERATIONS) {
-        //     int sig;
-        //     sigwait(&sigset, &sig);
-        //     loop();
-        //     if (times.size() % (ITERATIONS / 10) == 0) {
-        //         std::cout << times.size() << "\n";
-        //     }
-        // }
-
-        // return nullptr;
         }, nullptr);
 
     pthread_join(tid, nullptr);
