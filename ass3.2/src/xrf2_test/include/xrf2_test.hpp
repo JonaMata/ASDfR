@@ -26,8 +26,7 @@ private:
     void xenoState_callback(const std_msgs::msg::Int32::SharedPtr msg);
     void xeno2Ros_callback(const xrf2_msgs::msg::Xeno2Ros::SharedPtr msg);
 
-    void send_sequence() {
-    }
+    void send_sequence();
 };
 
 int main(int argc, char* argv[]);
