@@ -7,7 +7,15 @@
 #include "sensor_msgs/msg/image.hpp"
 #include "geometry_msgs/msg/point.hpp"
 
-#include "cv_bridge/cv_bridge.hpp"
+// Include check for cv_bridge. Ubuntu 22 is .h, Ubuntu 24 is .hpp
+#if __has_include(<cv_bridge/cv_bridge.hpp>)
+#include <cv_bridge/cv_bridge.hpp>
+#elif __has_include(<cv_bridge/cv_bridge.h>)
+#include <cv_bridge/cv_bridge.h>
+#else
+#error "Required cv_bridge header file not found"
+#endif
+
 #include "opencv2/core.hpp"
 #include <opencv2/highgui.hpp>
 
@@ -49,9 +57,6 @@ private:
         cv::imshow("green", result);
         cv::waitKey(1);
 
-        // Total pixels in the msg, length of msg.data
-        int total_pixels = msg.width * msg.height;
-
         // Sum pixel coordinates and count total amount of pixels to later get average position
         int total_above_threshold = 0;
         int sum_x = 0;
@@ -65,13 +70,13 @@ private:
                 // y coordinate is the row
                 sum_y += position[0] + 1;
             }
-        });
+            });
 
         // If fromCenter is false, we don't calculate the distance from the center
         // and -1 is used to indicate no object. Otherwise 0 (the center) is used.
         int x = fromCenter ? 0 : -1;
         int y = fromCenter ? 0 : -1;
-        if (total_above_threshold != 0) {
+        if (total_above_threshold > msg.width * msg.height * 0.05) {
             // Get average pixel location
             x = sum_x / total_above_threshold - 1;
             y = sum_y / total_above_threshold - 1;
