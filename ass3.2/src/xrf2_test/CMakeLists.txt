@@ -10,10 +10,11 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(xrf2_msgs REQUIRED)
 
 add_executable(xrf2_test src/xrf2_test.cpp)
-ament_target_dependencies(xrf2_test rclcpp std_msgs)
+ament_target_dependencies(xrf2_test rclcpp xrf2_msgs)
 target_include_directories(xrf2_test PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
