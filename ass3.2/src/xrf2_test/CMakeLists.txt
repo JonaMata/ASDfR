@@ -12,6 +12,17 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 find_package(xrf2_msgs REQUIRED)
 
+add_executable(xrf2_test src/xrf2_test.cpp)
+ament_target_dependencies(xrf2_test rclcpp std_msgs)
+target_include_directories(xrf2_test PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+target_compile_features(xrf2_test PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+
+install(TARGETS xrf2_test
+  DESTINATION lib/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
