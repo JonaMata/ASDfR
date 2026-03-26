@@ -18,6 +18,9 @@
 
 #include "opencv2/core.hpp"
 #include <opencv2/highgui.hpp>
+#include <opencv2/features2d.hpp>
+
+#include <vector>
 
 typedef cv::Point3_<uint8_t> Pixel;
 
@@ -40,59 +43,95 @@ private:
 
     bool fromCenter;
     int threshold;
+    mutable cv::Ptr<cv::SimpleBlobDetector> blobDetector;
 
     void topic_callback(const sensor_msgs::msg::Image& msg) const {
+        if (blobDetector == nullptr) {
+            cv::SimpleBlobDetector::Params params;
+            params.minDistBetweenBlobs = msg.height / 4;
+            params.filterByArea = true;
+            params.minArea = 10 * 10;
+            params.maxArea = msg.height * msg.height;
+            params.filterByColor = true;
+            params.blobColor = 255;
+            params.filterByConvexity = true;
+            params.minConvexity = 0.6;
+            params.filterByInertia = true;
+            params.minInertiaRatio = 0.6;
+            blobDetector = cv::SimpleBlobDetector().create(params);
+        }
+
         auto frame = cv_bridge::toCvCopy(msg, "bgr8")->image;
         cv::Mat frame_hsv;
         cv::cvtColor(frame, frame_hsv, cv::COLOR_BGR2HSV);
 
         cv::Mat mask;
-        cv::inRange(frame_hsv, cv::Scalar(35, 30, 30), cv::Scalar(70, 255, 255), mask);
+        cv::inRange(frame_hsv, cv::Scalar(30, 30, 30), cv::Scalar(85, 255, 255), mask);
 
         cv::erode(mask, mask, cv::Mat());
+        cv::dilate(mask, mask, cv::Mat());
         cv::dilate(mask, mask, cv::Mat());
 
         cv::Mat result;
         cv::bitwise_and(frame, frame, result, mask);
-        cv::imshow("green", result);
-        cv::waitKey(1);
 
-        // Sum pixel coordinates and count total amount of pixels to later get average position
-        int total_above_threshold = 0;
-        int sum_x = 0;
-        int sum_y = 0;
+        std::vector<cv::KeyPoint> blobs;
+        blobDetector->detect(mask, blobs);
 
-        result.forEach<Pixel>([&](Pixel& p, const int* position) -> void {
-            if ((p.x + p.y + p.z) / 3 > threshold) {
-                total_above_threshold++;
-                // x coordinate is the column
-                sum_x += position[1] + 1;
-                // y coordinate is the row
-                sum_y += position[0] + 1;
-            }
-            });
-
-        // If fromCenter is false, we don't calculate the distance from the center
-        // and -1 is used to indicate no object. Otherwise 0 (the center) is used.
-        int x = fromCenter ? 0 : -1;
-        int y = fromCenter ? 0 : -1;
-        if (total_above_threshold > msg.width * msg.height * 0.05) {
-            // Get average pixel location
-            x = sum_x / total_above_threshold - 1;
-            y = sum_y / total_above_threshold - 1;
-            // If fromCenter is true, we subtract half the image width to get
-            // the distance from the center in range [-width/2, width/2]
-            if (fromCenter) {
-                x -= msg.width / 2;
-                y -= msg.height / 2;
+        float biggestBlob = 0;
+        float biggestBlobCenterX = fromCenter ? 0 : -1;
+        float biggestBlobCenterY = fromCenter ? 0 : -1;
+        for (std::vector<cv::KeyPoint>::iterator blob = blobs.begin(); blob != blobs.end(); blob++) {
+            if (blob->size > biggestBlob) {
+                biggestBlob = blob->size;
+                biggestBlobCenterX = blob->pt.x;
+                biggestBlobCenterY = blob->pt.y;
             }
         }
 
+        if (biggestBlob != 0) {
+            cv::circle(result, cv::Point(biggestBlobCenterX, biggestBlobCenterY), 10, cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
+        }
+
+        cv::imshow("green", result);
+        cv::waitKey(1);
+
+        // // Sum pixel coordinates and count total amount of pixels to later get average position
+        // int total_above_threshold = 0;
+        // int sum_x = 0;
+        // int sum_y = 0;
+
+        // result.forEach<Pixel>([&](Pixel& p, const int* position) -> void {
+        //     if ((p.x + p.y + p.z) / 3 > threshold) {
+        //         total_above_threshold++;
+        //         // x coordinate is the column
+        //         sum_x += position[1] + 1;
+        //         // y coordinate is the row
+        //         sum_y += position[0] + 1;
+        //     }
+        //     });
+
+        // // If fromCenter is false, we don't calculate the distance from the center
+        // // and -1 is used to indicate no object. Otherwise 0 (the center) is used.
+        // int x = fromCenter ? 0 : -1;
+        // int y = fromCenter ? 0 : -1;
+        // if (total_above_threshold > msg.width * msg.height * 0.05) {
+        //     // Get average pixel location
+        //     x = sum_x / total_above_threshold - 1;
+        //     y = sum_y / total_above_threshold - 1;
+        //     // If fromCenter is true, we subtract half the image width to get
+        //     // the distance from the center in range [-width/2, width/2]
+        //     if (fromCenter) {
+        //         x -= msg.width / 2;
+        //         y -= msg.height / 2;
+        //     }
+        // }
+
         // Publish location
         auto message = geometry_msgs::msg::Point();
-        message.x = x;
-        message.y = y;
-        RCLCPP_INFO(this->get_logger(), "Publishing: x=%d, y=%d, width=%d, height=%d, fromCenter=%d", x, y, msg.width, msg.height, fromCenter ? 1 : 0);
+        message.x = biggestBlobCenterX;
+        message.y = biggestBlobCenterY;
+        RCLCPP_INFO(this->get_logger(), "Publishing: x=%d, y=%d, width=%d, height=%d, fromCenter=%d", biggestBlobCenterX, biggestBlobCenterY, msg.width, msg.height, fromCenter ? 1 : 0);
         publisher_->publish(message);
     }
 };
