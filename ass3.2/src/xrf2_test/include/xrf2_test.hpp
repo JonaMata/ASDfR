@@ -22,6 +22,8 @@ private:
 
     rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr xenoCmdPub;
     rclcpp::Publisher<xrf2_msgs::msg::Ros2Xeno>::SharedPtr ros2XenoPub;
+
+    std::vector<std::vector<double>> setpoints;
     bool initialised = false;
     void xenoState_callback(const std_msgs::msg::Int32::SharedPtr msg);
     void xeno2Ros_callback(const xrf2_msgs::msg::Xeno2Ros::SharedPtr msg);

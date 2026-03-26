@@ -1,7 +1,7 @@
 #include "xrf2_test.hpp"
 
 Xrf2Test::Xrf2Test(): Node("xrf2_test") {
-    this->declare_parameter("setpoints", std::vector<std::vector<double>>{{0.0, 0.0}, {1.0, 1.0}, {0.0, 0.0}, {-1.0, 1.0}, {0.0, 0.0}, {1.0, -1.0}, {0.0, 0.0}, {-1.0, -1.0}, {0.0, 0.0}});
+    setpoints = this->declare_parameter("setpoints", std::vector<std::vector<double>>{{0.0, 0.0}, {1.0, 1.0}, {0.0, 0.0}, {-1.0, 1.0}, {0.0, 0.0}, {1.0, -1.0}, {0.0, 0.0}, {-1.0, -1.0}, {0.0, 0.0}});
 
     xenoStateSub = this->create_subscription<std_msgs::msg::Int32>("XenoState", 10, std::bind(&Xrf2Test::xenoState_callback, this, _1));
     xeno2RosSub = this->create_subscription<xrf2_msgs::msg::Xeno2Ros>("Xeno2Ros", 10, std::bind(&Xrf2Test::xeno2Ros_callback, this, _1));
@@ -32,9 +32,6 @@ void Xrf2Test::xeno2Ros_callback(const xrf2_msgs::msg::Xeno2Ros::SharedPtr msg) 
 
 void Xrf2Test::send_sequence() {
     xrf2_msgs::msg::Ros2Xeno msg;
-
-    std::vector<std::vector<double>> setpoints;
-    this->get_parameter("setpoints", setpoints);
 
     for (const auto& setpoint : setpoints) {
         msg.steer_left = setpoint[0];
