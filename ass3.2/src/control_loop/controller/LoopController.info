@@ -1,0 +1,51 @@
+LoopController
+=============================================================
+
+INPUTS & OUTPUTS INDICES
+------------------------
+ 
+*** INPUTS ***
+
+	m_V[0] = u[0];		/* PosLeft */
+	m_V[2] = u[1];		/* PosRight */
+	m_V[4] = u[2];		/* SetVelLeft */
+	m_V[6] = u[3];		/* SetVelRight */
+
+ 
+*** OUTPUTS ***
+
+	y[0] = 	m_V[1];		/* RetPosLeft */
+	y[1] = 	m_V[3];		/* RetPosRight */
+	y[2] = 	m_V[5];		/* SteerLeft */
+	y[3] = 	m_V[7];		/* SteerRight */
+
+ 
+
+
+
+
+NAMES
+-----
+
+[CONSTANTS]
+	NULL
+[PARAMETERS]
+	NULL
+[VARIABLES]
+	"PosLeft",
+	"RetPosLeft",
+	"PosRight",
+	"RetPosRight",
+	"SetVelLeft",
+	"SteerLeft",
+	"SetVelRight",
+	"SteerRight"
+
+[STATES]
+	NULL
+[RATES]
+	NULL
+[MATRICES]
+	NULL
+
+
