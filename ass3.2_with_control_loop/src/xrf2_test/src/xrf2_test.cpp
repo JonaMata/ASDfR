@@ -3,7 +3,7 @@
 
 Xrf2Test::Xrf2Test(): Node("xrf2_test") {
     // setpoints = this->declare_parameter("setpoints", std::vector<std::vector<double>>{{0.0, 0.0}, {1.0, 1.0}, {0.0, 0.0}, {-1.0, 1.0}, {0.0, 0.0}, {1.0, -1.0}, {0.0, 0.0}, {-1.0, -1.0}, {0.0, 0.0}});
-    setpoints = {{0.0, 0.0}, {1000.0, 1.0}, {0.0, 0.0}, {-1000.0, 1000.0}, {0.0, 0.0}, {1000.0, -1000.0}, {0.0, 0.0}, {-1000.0, -1000.0}, {0.0, 0.0}};
+    setpoints = {{0.0, 0.0}, {1.0, 1.0}, {0.0, 0.0}, {-1.0, 1.0}, {0.0, 0.0}, {1.0, -1.0}, {0.0, 0.0}, {-1.0, -1.0}, {0.0, 0.0}};
     xenoStateSub = this->create_subscription<std_msgs::msg::Int32>("XenoState", 10, std::bind(&Xrf2Test::xenoState_callback, this, _1));
     xeno2RosSub = this->create_subscription<xrf2_msgs::msg::Xeno2Ros>("Xeno2Ros", 10, std::bind(&Xrf2Test::xeno2Ros_callback, this, _1));
     xenoCmdPub = this->create_publisher<std_msgs::msg::Int32>("XenoCmd", 10);

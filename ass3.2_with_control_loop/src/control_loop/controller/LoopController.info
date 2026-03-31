@@ -1,0 +1,89 @@
+LoopController
+=============================================================
+
+INPUTS & OUTPUTS INDICES
+------------------------
+ 
+*** INPUTS ***
+
+	m_V[17] = u[0];		/* EncoderLeft */
+	m_V[16] = u[1];		/* EncoderRight */
+	m_V[20] = u[2];		/* SetVelLeft {rad/s} */
+	m_V[21] = u[3];		/* SetVelRight {rad/s} */
+
+ 
+*** OUTPUTS ***
+
+	y[0] = 	m_V[18];		/* MotorOutputLeft */
+	y[1] = 	m_V[19];		/* MotorOutputRight */
+	y[2] = 	m_V[22];		/* posLeft {rad} */
+	y[3] = 	m_V[23];		/* posRight {rad} */
+
+ 
+
+
+
+
+NAMES
+-----
+
+[CONSTANTS]
+	NULL
+[PARAMETERS]
+	"Gain\\K",
+	"Gain1\\K",
+	"Gain2\\K",
+	"Gain3\\K",
+	"Limit\\maximum",
+	"Limit\\minimum",
+	"Limit2\\maximum",
+	"Limit2\\minimum",
+	"PID_Left\\Kp",
+	"PID_Left\\Kd",
+	"PID_Left\\Ki",
+	"PID_Right\\Kp",
+	"PID_Right\\Kd",
+	"PID_Right\\Ki"
+
+[VARIABLES]
+	"Gain\\input",
+	"Gain\\output",
+	"Gain1\\input",
+	"Gain1\\output",
+	"Gain2\\output",
+	"Gain3\\output",
+	"Limit\\output",
+	"Limit2\\output",
+	"PID_Left\\steering",
+	"",
+	"",
+	"",
+	"PID_Right\\steering",
+	"",
+	"",
+	"",
+	"EncoderRight",
+	"EncoderLeft",
+	"MotorOutputLeft",
+	"MotorOutputRight",
+	"SetVelLeft",
+	"SetVelRight",
+	"posLeft",
+	"posRight"
+
+[STATES]
+	"",
+	"",
+	"PosSPLeft\\output",
+	"PosSPRight\\output"
+
+[RATES]
+	"",
+	"",
+	"PosSPLeft\\input",
+	"PosSPRight\\input"
+
+[MATRICES]
+	NULL
+
+
