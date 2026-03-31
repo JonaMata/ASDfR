@@ -22,6 +22,7 @@ public:
 
         declare_parameter("left_waypoints", std::vector<double>{0.0, 1.0, -1.0, -2.0});
         declare_parameter("right_waypoints", std::vector<double>{0.0, -1.0, 1.0, -2.0});
+        want_ball_size = declare_parameter("want_ball_size", 60.0);
         leftWaypoints_ = get_parameter("left_waypoints").as_double_array();
         rightWaypoints_ = get_parameter("right_waypoints").as_double_array();
         current_step_ = 0;
@@ -31,10 +32,10 @@ public:
                 std::bind(&SequenceController::topic_callback, this, _1));
         } else {
             timer_ = create_wall_timer(
-            std::chrono::seconds(2),
-            [this]() { sequence_step(); });
+                std::chrono::seconds(2),
+                [this]() { sequence_step(); });
         }
-        
+
         left_pub = this->create_publisher<example_interfaces::msg::Float64>("output/left_motor/setpoint_vel", 10);
         right_pub = this->create_publisher<example_interfaces::msg::Float64>("output/right_motor/setpoint_vel", 10);
     }
@@ -47,6 +48,7 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
     std::vector<double> leftWaypoints_;
     std::vector<double> rightWaypoints_;
+    double want_ball_size;
     size_t current_step_;
     double tau;
 
@@ -75,8 +77,13 @@ private:
         if (abs(setpointRotate) < 0.5) {
             setpointRotate = 0;
         }
-        
-        double setpointForward = std::clamp(-point->y * tau, -2.0, 2.0);
+
+        // double setpointForward = std::clamp(-point->y * tau, -2.0, 2.0);
+        double setpointForward = point->z != 0 ? want_ball_size - point->z : 0;
+        if (abs(setpointForward) < 5) {
+            setpointForward = 0;
+        }
+
         // Dead zone in the center
         if (abs(setpointForward) < 0.5) {
             setpointForward = 0;

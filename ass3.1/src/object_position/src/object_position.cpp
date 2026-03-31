@@ -32,6 +32,7 @@ public:
     ObjectPosition() : Node("object_position") {
         threshold = this->declare_parameter<int>("threshold", 10);
         fromCenter = this->declare_parameter<bool>("from_center", false);
+        showMask = declare_parameter<bool>("show_mask", false);
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
             "image", 10, std::bind(&ObjectPosition::topic_callback, this, _1));
         publisher_ = this->create_publisher<geometry_msgs::msg::Point>("output/object_position", 10);
@@ -43,6 +44,7 @@ private:
 
     bool fromCenter;
     int threshold;
+    bool showMask;
     mutable cv::Ptr<cv::SimpleBlobDetector> blobDetector;
 
     void topic_callback(const sensor_msgs::msg::Image& msg) const {
@@ -50,14 +52,14 @@ private:
             cv::SimpleBlobDetector::Params params;
             params.minDistBetweenBlobs = msg.height / 4;
             params.filterByArea = true;
-            params.minArea = 10 * 10;
+            params.minArea = 20 * 20;
             params.maxArea = msg.height * msg.height;
             params.filterByColor = true;
             params.blobColor = 255;
             params.filterByConvexity = true;
-            params.minConvexity = 0.6;
+            params.minConvexity = 0.4;
             params.filterByInertia = true;
-            params.minInertiaRatio = 0.6;
+            params.minInertiaRatio = 0.5;
             blobDetector = cv::SimpleBlobDetector().create(params);
         }
 
@@ -68,9 +70,10 @@ private:
         cv::Mat mask;
         cv::inRange(frame_hsv, cv::Scalar(30, 30, 30), cv::Scalar(85, 255, 255), mask);
 
-        cv::erode(mask, mask, cv::Mat());
-        cv::dilate(mask, mask, cv::Mat());
-        cv::dilate(mask, mask, cv::Mat());
+        cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+        cv::morphologyEx(mask, mask, cv::MORPH_DILATE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(25, 25)));
+        cv::morphologyEx(mask, mask, cv::MORPH_ERODE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(10, 10)));
+        cv::morphologyEx(mask, mask, cv::MORPH_ERODE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
         cv::Mat result;
         cv::bitwise_and(frame, frame, result, mask);
@@ -89,12 +92,14 @@ private:
             }
         }
 
-        if (biggestBlob != 0) {
-            cv::circle(result, cv::Point(biggestBlobCenterX, biggestBlobCenterY), 10, cv::Scalar(255, 0, 255), 3, cv::LINE_AA);
-        }
+        if (showMask) {
+            if (biggestBlob != 0) {
+                cv::circle(result, cv::Point(biggestBlobCenterX, biggestBlobCenterY), biggestBlob / 2, cv::Scalar(255, 0, 255), 2, cv::LINE_AA);
+            }
 
-        cv::imshow("green", result);
-        cv::waitKey(1);
+            cv::imshow("green", result);
+            cv::waitKey(1);
+        }
 
         // // Sum pixel coordinates and count total amount of pixels to later get average position
         // int total_above_threshold = 0;
@@ -131,7 +136,8 @@ private:
         auto message = geometry_msgs::msg::Point();
         message.x = biggestBlobCenterX;
         message.y = biggestBlobCenterY;
-        RCLCPP_INFO(this->get_logger(), "Publishing: x=%d, y=%d, width=%d, height=%d, fromCenter=%d", biggestBlobCenterX, biggestBlobCenterY, msg.width, msg.height, fromCenter ? 1 : 0);
+        message.z = biggestBlob;
+        RCLCPP_INFO(this->get_logger(), "Publishing: x=%.0f, y=%.0f, z=%.0f, fromCenter=%d", biggestBlobCenterX, biggestBlobCenterY, biggestBlob, fromCenter ? 1 : 0);
         publisher_->publish(message);
     }
 };
