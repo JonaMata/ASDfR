@@ -754,7 +754,7 @@ PosSPRight\output
 
 ]]></token>
 	<token name="STATIC_EQUATIONS"><![CDATA[]]></token>
-	<token name="TIME_STEP_SIZE"><![CDATA[0]]></token>
+	<token name="TIME_STEP_SIZE"><![CDATA[0.01]]></token>
 	<token name="USER_NAME"><![CDATA[University of Twente]]></token>
 	<token name="VARIABLE_NAMES"><![CDATA[	"Gain\\input",
 	"Gain\\output",

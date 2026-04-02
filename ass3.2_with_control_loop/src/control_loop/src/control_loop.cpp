@@ -66,8 +66,13 @@ int ControlLoop::run()
     xeno_msg.pos_left = u[0];
     xeno_msg.pos_right = u[1];
 
-    actuate_data.pwm1 = std::clamp(y[0], -20.0, 20.0) * 4.3760683761;
-    actuate_data.pwm2 = std::clamp(y[1], -20.0, 20.0) * 4.3760683761;
+    double pwm1 = std::clamp(y[0], -20.0, 20.0) * 4.3760683761;
+    double pwm2 = std::clamp(y[1], -20.0, 20.0) * 4.3760683761;
+
+    monitor.printf("pwm1: %f\tpwm2: %f", pwm1, pwm2);
+
+    actuate_data.pwm1 = pwm1;
+    actuate_data.pwm2 = pwm2;
     
     // //  Change some data for logger            
     data_to_be_logged.setSteerLeft = u[2];
