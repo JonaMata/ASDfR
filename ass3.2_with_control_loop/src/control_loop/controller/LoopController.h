@@ -6,7 +6,7 @@
  *  model: RELbotSimple
  *  expmt: RELbotSimple
  *  date:  March 31, 2026
- *  time:  11:22:04 AM
+ *  time:  11:48:45 AM
  *  user:  University of Twente
  *  from:  -
  *  build: 5.1.1.13146
@@ -150,7 +150,7 @@ class LoopController: virtual public Submodel20sim
 		void CopyVariablesToOutputs (XXDouble *y);
 
 
-		BDF myintegmethod;	///< pointer to the integration method for this submodel
+		RungeKutta4 myintegmethod;	///< pointer to the integration method for this submodel
 };
 
 #endif	/* LoopController_H */

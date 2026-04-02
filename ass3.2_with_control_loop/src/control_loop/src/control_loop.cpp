@@ -55,24 +55,25 @@ int ControlLoop::run()
     logger.start();                             
     monitor.printf("Hello from run\n");  
 
-    u[0] = sample_data.channel1;
-    u[1] = sample_data.channel2;
+    u[0] = sample_data.channel1 * 0.006135923152;
+    u[1] = sample_data.channel2 * 0.006135923152;
     u[2] = ros_msg.steer_left;
     u[3] = ros_msg.steer_right;
 
     controller.Calculate(u, y);
-    monitor.printf("y0: %f\ty1: %f\ty2: %f\ty3: %f\n", y[0], y[1], y[2], y[3]);
+    // monitor.printf("set_left: %f\tset_right: %f\tpos_left: %f\tpos_right: %f\n", u[2], u[3], u[0], u[1]);
 
-    xeno_msg.pos_left = y[0];
-    xeno_msg.pos_right = y[1];
-    actuate_data.pwm1 = y[2];
-    actuate_data.pwm2 = y[3];
+    xeno_msg.pos_left = u[0];
+    xeno_msg.pos_right = u[1];
+
+    actuate_data.pwm1 = std::clamp(y[0], -20.0, 20.0) * 4.3760683761;
+    actuate_data.pwm2 = std::clamp(y[1], -20.0, 20.0) * 4.3760683761;
     
-    //  Change some data for logger            
-    data_to_be_logged.setSteerLeft = u[0];
-    data_to_be_logged.setSteerRight = u[1];
-    data_to_be_logged.posLeft = y[0];
-    data_to_be_logged.posRight = y[1];
+    // //  Change some data for logger            
+    data_to_be_logged.setSteerLeft = u[2];
+    data_to_be_logged.setSteerRight = u[3];
+    data_to_be_logged.posLeft = u[0];
+    data_to_be_logged.posRight = u[1];
     if(controller.IsFinished())
         return 1;
 

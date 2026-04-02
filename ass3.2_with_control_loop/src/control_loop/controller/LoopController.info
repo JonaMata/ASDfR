@@ -6,18 +6,16 @@ INPUTS & OUTPUTS INDICES
  
 *** INPUTS ***
 
-	m_V[17] = u[0];		/* EncoderLeft */
-	m_V[16] = u[1];		/* EncoderRight */
-	m_V[20] = u[2];		/* SetVelLeft {rad/s} */
-	m_V[21] = u[3];		/* SetVelRight {rad/s} */
+	m_V[12] = u[0];		/* PosLeft */
+	m_V[13] = u[1];		/* PosRight */
+	m_V[14] = u[2];		/* SetVelLeft */
+	m_V[15] = u[3];		/* SetVelRight */
 
  
 *** OUTPUTS ***
 
-	y[0] = 	m_V[18];		/* MotorOutputLeft */
-	y[1] = 	m_V[19];		/* MotorOutputRight */
-	y[2] = 	m_V[22];		/* posLeft {rad} */
-	y[3] = 	m_V[23];		/* posRight {rad} */
+	y[0] = 	m_V[10];		/* SteerLeft */
+	y[1] = 	m_V[11];		/* SteerRight */
 
  
 
@@ -30,14 +28,6 @@ NAMES
 [CONSTANTS]
 	NULL
 [PARAMETERS]
-	"Gain\\K",
-	"Gain1\\K",
-	"Gain2\\K",
-	"Gain3\\K",
-	"Limit\\maximum",
-	"Limit\\minimum",
-	"Limit2\\maximum",
-	"Limit2\\minimum",
 	"PID_Left\\Kp",
 	"PID_Left\\Kd",
 	"PID_Left\\Ki",
@@ -46,14 +36,6 @@ NAMES
 	"PID_Right\\Ki"
 
 [VARIABLES]
-	"Gain\\input",
-	"Gain\\output",
-	"Gain1\\input",
-	"Gain1\\output",
-	"Gain2\\output",
-	"Gain3\\output",
-	"Limit\\output",
-	"Limit2\\output",
 	"PID_Left\\steering",
 	"",
 	"",
@@ -62,14 +44,16 @@ NAMES
 	"",
 	"",
 	"",
-	"EncoderRight",
-	"EncoderLeft",
-	"MotorOutputLeft",
-	"MotorOutputRight",
+	"PlusMinus\\minus1",
+	"PlusMinus1\\minus1",
+	"SteerLeft",
+	"SteerRight",
+	"PosLeft",
+	"PosRight",
 	"SetVelLeft",
 	"SetVelRight",
-	"posLeft",
-	"posRight"
+	"PID_Left\\error_dot_in",
+	"PID_Right\\error_dot_in"
 
 [STATES]
 	"",
