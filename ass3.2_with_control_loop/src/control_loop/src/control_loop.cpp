@@ -61,7 +61,7 @@ int ControlLoop::run()
     u[3] = ros_msg.steer_right;
 
     controller.Calculate(u, y);
-    // monitor.printf("set_left: %f\tset_right: %f\tpos_left: %f\tpos_right: %f\n", u[2], u[3], u[0], u[1]);
+    monitor.printf("set_left: %f\tset_right: %f\tpos_left: %f\tpos_right: %f\n", u[2], u[3], u[0], u[1]);
 
     xeno_msg.pos_left = u[0];
     xeno_msg.pos_right = u[1];
@@ -69,7 +69,7 @@ int ControlLoop::run()
     double pwm1 = std::clamp(y[0], -20.0, 20.0) * 4.3760683761;
     double pwm2 = std::clamp(y[1], -20.0, 20.0) * 4.3760683761;
 
-    monitor.printf("pwm1: %f\tpwm2: %f", pwm1, pwm2);
+    monitor.printf("pwm1: %f\tpwm2: %f\n", pwm1, pwm2);
 
     actuate_data.pwm1 = pwm1;
     actuate_data.pwm2 = pwm2;
