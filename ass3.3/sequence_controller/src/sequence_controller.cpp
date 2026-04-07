@@ -87,10 +87,6 @@ private:
         double setpointRight = (setpointForward - setpointRotate);
         double scalingFactor = 2 / std::max(abs(setpointLeft), abs(setpointRight));
 
-        double setpointLeft = (setpointRotate + setpointForward);
-        double setpointRight = (setpointRotate - setpointForward);
-        double scalingFactor = std::max(abs(setpointLeft), abs(setpointRight)) / 2;
-
         // Publish setpoint
         auto msg = xrf2_msgs::msg::Ros2Xeno();
         msg.steer_left = setpointLeft * scalingFactor;
