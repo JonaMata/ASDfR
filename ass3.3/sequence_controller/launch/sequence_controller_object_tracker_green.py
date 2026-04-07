@@ -22,10 +22,6 @@ def generate_launch_description():
         package='sequence_controller',
         executable='sequence_controller',
         name='sequence_controller',
-        remappings=[
-            ('/output/left_motor/setpoint_vel', '/input/left_motor/setpoint_vel'),
-            ('/output/right_motor/setpoint_vel', '/input/right_motor/setpoint_vel'),
-        ],
         parameters=[
             {
                 'track_object': True,
@@ -34,25 +30,25 @@ def generate_launch_description():
         ],
     )
 
-    relbot_adapter = Node(
-        package='relbot_adapter',
-        executable='relbot_adapter',
-        name='relbot_adapter',
-        remappings=[
-            ('/output/motor_cmd', '/input/motor_cmd'),
-            ('/input/twist', '/keyboard/twist'),
-        ]
-    )
+    # relbot_adapter = Node(
+    #     package='relbot_adapter',
+    #     executable='relbot_adapter',
+    #     name='relbot_adapter',
+    #     remappings=[
+    #         ('/output/motor_cmd', '/input/motor_cmd'),
+    #         ('/input/twist', '/keyboard/twist'),
+    #     ]
+    # )
 
-    relbot_simulator = Node(
-        package='relbot_simulator',
-        executable='relbot_simulator',
-        name='relbot_simulator',
-    )
+    # relbot_simulator = Node(
+    #     package='relbot_simulator',
+    #     executable='relbot_simulator',
+    #     name='relbot_simulator',
+    # )
 
     return LaunchDescription([
         object_position,
         object_tracker_simple,
-        relbot_adapter,
-        relbot_simulator,
+        # relbot_adapter,
+        # relbot_simulator,
     ])
