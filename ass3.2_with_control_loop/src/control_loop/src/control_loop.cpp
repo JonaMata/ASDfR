@@ -66,17 +66,17 @@ int ControlLoop::run()
 
     if(abs(diff1) > 7000) {
         if(diff1>0) {
-            diff1 -= 16384
+            diff1 -= 16384;
         } else {
-            diff1 += 16384
+            diff1 += 16384;
         }
     }
 
     if(abs(diff2) > 7000) {
         if(diff2>0) {
-            diff2 -= 16384
+            diff2 -= 16384;
         } else {
-            diff2 += 16384
+            diff2 += 16384;
         }
     }
 
