@@ -33,6 +33,9 @@ int ControlLoop::initialising()
     // The FPGA has to be initialised at least once
     ico_io.init();
 
+    prevChannel1 = sample_data.channel1;
+    prevChannel2 = sample_data.channel2;
+
     return 1;
 }
 
@@ -53,10 +56,35 @@ int ControlLoop::run()
 
     // Start logger
     logger.start();                             
-    monitor.printf("Hello from run\n");  
+    monitor.printf("Hello from run\n");
 
-    u[0] = sample_data.channel1 * 0.000393822;
-    u[1] = sample_data.channel2 * 0.000393822;
+    uint8_t channel1 = sample_data.channel1;
+    uint8_t channel2 = sample_data.channel2;
+
+    int diff1 = channel1 - prevChannel1;
+    int diff2 = channel2 - prevChannel2;
+
+    if(abs(diff1) > 7000) {
+        if(diff1>0) {
+            diff1 -= 16384
+        } else {
+            diff1 += 16384
+        }
+    }
+
+    if(abs(diff2) > 7000) {
+        if(diff2>0) {
+            diff2 -= 16384
+        } else {
+            diff2 += 16384
+        }
+    }
+
+    prevChannel1 = channel1;
+    prevChannel2 = channel2;
+
+    u[0] += diff1 * 0.000393822;
+    u[1] += diff2 * 0.000393822;
     u[2] = ros_msg.steer_left;
     u[3] = ros_msg.steer_right;
 

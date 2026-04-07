@@ -11,6 +11,8 @@ struct LogStruct
     double setSteerRight = 0;
     double posLeft = 0;
     double posRight = 0;
+    uint8_t prevChannel1;
+    uint8_t prevChannel2;
 };
 
 #pragma pack(0)
