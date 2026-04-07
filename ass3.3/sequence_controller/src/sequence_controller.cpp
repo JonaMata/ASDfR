@@ -93,6 +93,9 @@ private:
             setpointRight = (setpointForward - setpointRotate);
 
             double scalingFactor = 2 / std::max(abs(setpointLeft), abs(setpointRight));
+            if(std::max(abs(setpointLeft), abs(setpointRight)) == 0) {
+                scalingFactor = 1;
+            }
             setpointLeft = setpointLeft * scalingFactor;
             setpointRight = setpointRight * scalingFactor;
         }
