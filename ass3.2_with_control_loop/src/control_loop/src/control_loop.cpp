@@ -83,32 +83,34 @@ int ControlLoop::run()
     prevChannel1 = channel1;
     prevChannel2 = channel2;
 
-    u[0] += diff1 * 0.000393822 / 4;
-    u[1] -= diff2 * 0.000393822 / 4;
-    u[2] = ros_msg.steer_left;
-    u[3] = ros_msg.steer_right;
+    u[0] -= diff1 * 0.000393822 / 4;
+    u[1] += diff2 * 0.000393822 / 4;
+    u[2] = ros_msg.steer_right;
+    u[3] = ros_msg.steer_left;
 
     controller.Calculate(u, y);
-    monitor.printf("set_left: %f\tset_right: %f\tpos_left: %f\tpos_right: %f\n", u[2], u[3], u[0], u[1]);
+    monitor.printf("set_right: %f\tset_left: %f\tpos_right: %f\tpos_left: %f\n", u[2], u[3], u[0], u[1]);
 
-    xeno_msg.pos_left = u[0];
-    xeno_msg.pos_right = u[1];
+    xeno_msg.pos_right = u[0];
+    xeno_msg.pos_left = u[1];
 
     // double pwm1 = std::clamp(y[0], -20.0, 20.0) * 68.1791453;
     // double pwm2 = std::clamp(y[1], -20.0, 20.0) * 68.1791453;
-    double pwm1 = y[0]/100*2048;
-    double pwm2 = y[1]/100*2048;
+    // double pwm1 = std::clamp(y[0]/100*2048, -2048.0, 2048.0);
+    // double pwm2 = std::clamp(y[1]/100*2048, -2048.0, 2048.0);
+    double pwm1 = std::clamp(-y[0], -2048.0, 2048.0);
+    double pwm2 = std::clamp(y[1], -2048.0, 2048.0);
 
-    monitor.printf("pwm1: %f\tpwm2: %f\n", pwm1, pwm2);
+    // monitor.printf("y[0]: %f\ty[1]: %f\tpwm1: %f\tpwm2: %f\n", y[0], y[1], pwm1, pwm2);
 
     actuate_data.pwm1 = pwm1;
     actuate_data.pwm2 = pwm2;
     
     // //  Change some data for logger            
-    data_to_be_logged.setSteerLeft = u[2];
-    data_to_be_logged.setSteerRight = u[3];
-    data_to_be_logged.posLeft = u[0];
-    data_to_be_logged.posRight = u[1];
+    data_to_be_logged.setSteerRight = u[2];
+    data_to_be_logged.setSteerLeft = u[3];
+    data_to_be_logged.posRight = u[0];
+    data_to_be_logged.posLeft = u[1];
     if(controller.IsFinished())
         return 1;
 
