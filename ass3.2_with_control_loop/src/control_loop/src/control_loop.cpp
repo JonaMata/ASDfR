@@ -55,8 +55,8 @@ int ControlLoop::run()
     logger.start();                             
     monitor.printf("Hello from run\n");  
 
-    u[0] = sample_data.channel1 * 0.006135923152;
-    u[1] = sample_data.channel2 * 0.006135923152;
+    u[0] = sample_data.channel1 * 0.000393822;
+    u[1] = sample_data.channel2 * 0.000393822;
     u[2] = ros_msg.steer_left;
     u[3] = ros_msg.steer_right;
 
@@ -66,8 +66,8 @@ int ControlLoop::run()
     xeno_msg.pos_left = u[0];
     xeno_msg.pos_right = u[1];
 
-    double pwm1 = std::clamp(y[0], -20.0, 20.0) * 4.3760683761;
-    double pwm2 = std::clamp(y[1], -20.0, 20.0) * 4.3760683761;
+    double pwm1 = std::clamp(y[0], -20.0, 20.0) * 68.1791453;
+    double pwm2 = std::clamp(y[1], -20.0, 20.0) * 68.1791453;
 
     monitor.printf("pwm1: %f\tpwm2: %f\n", pwm1, pwm2);
 
