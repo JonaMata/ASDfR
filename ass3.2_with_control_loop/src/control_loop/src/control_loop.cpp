@@ -94,8 +94,10 @@ int ControlLoop::run()
     xeno_msg.pos_left = u[0];
     xeno_msg.pos_right = u[1];
 
-    double pwm1 = std::clamp(y[0], -20.0, 20.0) * 68.1791453;
-    double pwm2 = std::clamp(y[1], -20.0, 20.0) * 68.1791453;
+    // double pwm1 = std::clamp(y[0], -20.0, 20.0) * 68.1791453;
+    // double pwm2 = std::clamp(y[1], -20.0, 20.0) * 68.1791453;
+    double pwm1 = y[0]/100*2048;
+    double pwm2 = y[1]/100*2048;
 
     monitor.printf("pwm1: %f\tpwm2: %f\n", pwm1, pwm2);
 
