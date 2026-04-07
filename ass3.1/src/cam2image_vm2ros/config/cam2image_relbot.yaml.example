@@ -2,11 +2,11 @@
   ros__parameters:
     width: 320
     height: 240
-    show_camera: true
+    show_camera: false
     history: "keep_last"
     durability: "volatile"
     reliability: "reliable"
     depth: 1
-    rotate: false
+    rotate: true
     throttle_rate: 5000.0
     flip: true

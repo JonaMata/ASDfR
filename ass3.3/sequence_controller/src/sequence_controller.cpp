@@ -28,7 +28,7 @@ public:
 
         objectPosition_sub = this->create_subscription<geometry_msgs::msg::Point>("input/object_position", 10,
             std::bind(&SequenceController::topic_callback, this, _1));
-        
+
 
         xenoStateSub = this->create_subscription<std_msgs::msg::Int32>("XenoState", 10, std::bind(&SequenceController::xenoState_callback, this, _1));
         xeno2RosSub = this->create_subscription<xrf2_msgs::msg::Xeno2Ros>("Xeno2Ros", 10, std::bind(&SequenceController::xeno2Ros_callback, this, _1));
@@ -69,31 +69,42 @@ private:
     }
 
     void topic_callback(const geometry_msgs::msg::Point::SharedPtr point) {
-        // Get next setpoint
-        // Clamp here so it's not absurdly fast
-        double setpointRotate = std::clamp(-point->x * tau, -2.0, 2.0);
-        // Dead zone in the center so it doesn't twitch when viewing the object nearly directly
-        if (abs(setpointRotate) < 1) {
-            setpointRotate = 0;
-        }
+        double setpointRotate = 0;
+        double setpointForward = 0;
+        double setpointLeft = 0;
+        double setpointRight = 0;
 
-        // double setpointForward = std::clamp(-point->y * tau, -2.0, 2.0);
-        double setpointForward = std::clamp(point->z != 0 ? want_ball_size - point->z : 0, -2.0, 2.0);
-        if (abs(setpointForward) < 5) {
-            setpointForward = 0;
-        }
+        if (point->z != 0) {
+            // Get next setpoint
+            // Clamp here so it's not absurdly fast
+            setpointRotate = std::clamp(-point->x * tau, -2.0, 2.0);
+            // Dead zone in the center so it doesn't twitch when viewing the object nearly directly
+            if (abs(setpointRotate) < 0.5) {
+                setpointRotate = 0;
+            }
 
-        double setpointLeft = (setpointForward + setpointRotate);
-        double setpointRight = (setpointForward - setpointRotate);
-        double scalingFactor = 2 / std::max(abs(setpointLeft), abs(setpointRight));
+            // double setpointForward = std::clamp(-point->y * tau, -2.0, 2.0);
+            setpointForward = std::clamp(point->z != 0 ? want_ball_size - point->z : 0, -2.0, 2.0);
+            if (abs(want_ball_size - point->z) < 5) {
+                setpointForward = 0;
+            }
+
+            setpointLeft = (setpointForward + setpointRotate);
+            setpointRight = (setpointForward - setpointRotate);
+
+            double scalingFactor = 2 / std::max(abs(setpointLeft), abs(setpointRight));
+            setpointLeft = setpointLeft * scalingFactor;
+            setpointRight = setpointRight * scalingFactor;
+        }
 
         // Publish setpoint
         auto msg = xrf2_msgs::msg::Ros2Xeno();
-        msg.steer_left = setpointLeft * scalingFactor;
-        msg.steer_right = setpointRight * scalingFactor;
+        msg.steer_left = setpointLeft;
+        msg.steer_right = setpointRight;
         ros2XenoPub->publish(msg);
 
         RCLCPP_INFO(get_logger(), "setpointLeft=%.1f, setpointRight=%.1f", setpointLeft, setpointRight);
+        RCLCPP_INFO(get_logger(), "forward=%.1f, rotate=%.1f", setpointForward, setpointRotate);
     }
 };
 
