@@ -58,8 +58,8 @@ int ControlLoop::run()
     logger.start();                             
     monitor.printf("Hello from run\n");
 
-    uint8_t channel1 = sample_data.channel1;
-    uint8_t channel2 = sample_data.channel2;
+    int channel1 = sample_data.channel1;
+    int channel2 = sample_data.channel2;
 
     int diff1 = channel1 - prevChannel1;
     int diff2 = channel2 - prevChannel2;
@@ -83,8 +83,8 @@ int ControlLoop::run()
     prevChannel1 = channel1;
     prevChannel2 = channel2;
 
-    u[0] += diff1 * 0.000393822;
-    u[1] += diff2 * 0.000393822;
+    u[0] += diff1 * 0.000393822 / 4;
+    u[1] += diff2 * 0.000393822 / 4;
     u[2] = ros_msg.steer_left;
     u[3] = ros_msg.steer_right;
 

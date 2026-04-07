@@ -28,8 +28,8 @@ private:
     double u[4];
     double y[4];
 
-    uint8_t prevChannel1;
-    uint8_t prevChannel2;
+    int prevChannel1;
+    int prevChannel2;
 protected:
     //Functions
     int initialising() override;
