@@ -133,9 +133,15 @@ private:
         // }
 
         if (fromCenter) {
-            biggestBlobCenterX -= msg.width / 2;
-            biggestBlobCenterY -= msg.height / 2;
+            if (biggestBlob == 0) {
+                biggestBlobCenterX = 0;
+                biggestBlobCenterY = 0;
+            } else {
+                biggestBlobCenterX -= msg.width / 2;
+                biggestBlobCenterY -= msg.height / 2;
+            }
         }
+
 
         // Publish location
         auto message = geometry_msgs::msg::Point();

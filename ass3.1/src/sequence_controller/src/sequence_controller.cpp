@@ -74,24 +74,19 @@ private:
         // Clamp here so it's not absurdly fast
         double setpointRotate = std::clamp(-point->x * tau, -2.0, 2.0);
         // Dead zone in the center so it doesn't twitch when viewing the object nearly directly
-        if (abs(setpointRotate) < 0.5) {
+        if (abs(setpointRotate) < 1) {
             setpointRotate = 0;
         }
 
         // double setpointForward = std::clamp(-point->y * tau, -2.0, 2.0);
-        double setpointForward = point->z != 0 ? want_ball_size - point->z : 0;
+        double setpointForward = std::clamp(point->z != 0 ? want_ball_size - point->z : 0, -2.0, 2.0);
         if (abs(setpointForward) < 5) {
             setpointForward = 0;
         }
 
-        // Dead zone in the center
-        if (abs(setpointForward) < 0.5) {
-            setpointForward = 0;
-        }
-
-        double setpointLeft = (setpointRotate + setpointForward);
-        double setpointRight = (setpointRotate - setpointForward);
-        double scalingFactor = std::max(abs(setpointLeft), abs(setpointRight)) / 2;
+        double setpointLeft = (setpointForward + setpointRotate);
+        double setpointRight = (setpointForward - setpointRotate);
+        double scalingFactor = 2 / std::max(abs(setpointLeft), abs(setpointRight));
 
         // Publish setpoint
         auto leftMsg = example_interfaces::msg::Float64();
