@@ -77,22 +77,30 @@ private:
         if (point->z != 0) {
             // Get next setpoint
             // Clamp here so it's not absurdly fast
-            setpointRotate = std::clamp(-point->x * tau, -2.0, 2.0);
-            // Dead zone in the center so it doesn't twitch when viewing the object nearly directly
-            if (abs(setpointRotate) < 0.5) {
-                setpointRotate = 0;
+            int x = -point->x;
+            if (abs(x) < 30) {
+                x = 0;
             }
+            setpointRotate = std::clamp(x * tau, -5.0, 5.0);
+            // Dead zone in the center so it doesn't twitch when viewing the object nearly directly
+            // if (abs(setpointRotate) < 0.5) {
+            //     setpointRotate = 0;
+            // }
 
             // double setpointForward = std::clamp(-point->y * tau, -2.0, 2.0);
-            setpointForward = std::clamp(point->z != 0 ? want_ball_size - point->z : 0, -2.0, 2.0);
-            if (abs(want_ball_size - point->z) < 5) {
-                setpointForward = 0;
+            int z = want_ball_size - point->z;
+            if (abs(z) < 10) {
+                z = 0;
             }
+            setpointForward = std::clamp(z*tau, -5.0, 5.0);
+            // if (abs(want_ball_size - point->z) < 5) {
+            //     setpointForward = 0;
+            // }
 
             setpointLeft = (setpointForward + setpointRotate);
             setpointRight = (setpointForward - setpointRotate);
 
-            double scalingFactor = 2 / std::max(abs(setpointLeft), abs(setpointRight));
+            double scalingFactor = 5 / std::max(abs(setpointLeft), abs(setpointRight));
             if(std::max(abs(setpointLeft), abs(setpointRight)) == 0) {
                 scalingFactor = 1;
             }
