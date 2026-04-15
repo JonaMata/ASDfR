@@ -98,10 +98,9 @@ private:
         std::vector<std::vector<cv::Point>> contours;
         cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
         for (size_t i = 0; i < contours.size(); i++) {
-            
             auto c = contours[i];
             int area = cv::contourArea(c);
-            RCLCPP_INFO(this->get_logger(), "Publishin %d", area);
+            RCLCPP_INFO(this->get_logger(), "Area %d", area);
             if (area > biggestBlob && area > threshold) {
                 biggestBlob = area;
                 biggestIndex = i;
