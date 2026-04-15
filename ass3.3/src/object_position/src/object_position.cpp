@@ -80,7 +80,7 @@ private:
         
         lightness = std::clamp(lightness, lightness_lower, lightness_upper);
         int mask_lightness = mask_lightness_upper - (lightness - lightness_lower) / (lightness_upper - lightness_lower) * (mask_lightness_upper - mask_lightness_lower);
-        RCLCPP_INFO(this->get_logger(), "Lightness=%.0f, masklightness=%.0f", lightness, mask_lightness);
+        RCLCPP_INFO(this->get_logger(), "Lightness=%d, masklightness=%d", lightness, mask_lightness);
         
         cv::Mat mask;
         cv::inRange(frame_hsv, cv::Scalar(30, 85, mask_lightness), cv::Scalar(85, 255, 255), mask);
