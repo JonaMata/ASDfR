@@ -31,8 +31,8 @@ class ObjectPosition : public rclcpp::Node {
 public:
     ObjectPosition() : Node("object_position") {
         threshold = this->declare_parameter<int>("threshold", 10);
-        fromCenter = this->declare_parameter<bool>("from_center", false);
-        showMask = declare_parameter<bool>("show_mask", false);
+        fromCenter = this->declare_parameter<bool>("from_center", true);
+        showMask = declare_parameter<bool>("show_mask", true);
         subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
             "image", 10, std::bind(&ObjectPosition::topic_callback, this, _1));
         publisher_ = this->create_publisher<geometry_msgs::msg::Point>("output/object_position", 10);
@@ -45,30 +45,31 @@ private:
     bool fromCenter;
     int threshold;
     bool showMask;
-    mutable cv::Ptr<cv::SimpleBlobDetector> blobDetector;
+    // mutable cv::Ptr<cv::SimpleBlobDetector> blobDetector;
 
     void topic_callback(const sensor_msgs::msg::Image& msg) const {
-        if (blobDetector == nullptr) {
-            cv::SimpleBlobDetector::Params params;
-            params.minDistBetweenBlobs = msg.height / 4;
-            params.filterByArea = true;
-            params.minArea = 20 * 20;
-            params.maxArea = msg.height * msg.height;
-            params.filterByColor = true;
-            params.blobColor = 255;
-            params.filterByConvexity = true;
-            params.minConvexity = 0.4;
-            params.filterByInertia = true;
-            params.minInertiaRatio = 0.5;
-            blobDetector = cv::SimpleBlobDetector().create(params);
-        }
+        // if (blobDetector == nullptr) {
+        //     cv::SimpleBlobDetector::Params params;
+        //     params.minDistBetweenBlobs = msg.height / 4;
+        //     params.filterByArea = true;
+        //     params.minArea = 20 * 20;
+        //     params.maxArea = msg.height * msg.height;
+        //     params.filterByColor = true;
+        //     params.blobColor = 255;
+        //     params.filterByConvexity = true;
+        //     params.minConvexity = 0.4;
+        //     params.filterByInertia = true;
+        //     params.minInertiaRatio = 0.5;
+        //     blobDetector = cv::SimpleBlobDetector().create(params);
+        // }
 
         auto frame = cv_bridge::toCvCopy(msg, "bgr8")->image;
+        cv::GaussianBlur(frame, frame, cv::Size(7, 7), 0);
         cv::Mat frame_hsv;
         cv::cvtColor(frame, frame_hsv, cv::COLOR_BGR2HSV);
 
         cv::Mat mask;
-        cv::inRange(frame_hsv, cv::Scalar(30, 30, 30), cv::Scalar(85, 255, 255), mask);
+        cv::inRange(frame_hsv, cv::Scalar(30, 85, 10), cv::Scalar(85, 255, 255), mask);
 
         cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
         cv::morphologyEx(mask, mask, cv::MORPH_DILATE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(25, 25)));
@@ -78,23 +79,46 @@ private:
         cv::Mat result;
         cv::bitwise_and(frame, frame, result, mask);
 
-        std::vector<cv::KeyPoint> blobs;
-        blobDetector->detect(mask, blobs);
+        // std::vector<cv::KeyPoint> blobs;
+        // blobDetector->detect(mask, blobs);
 
         float biggestBlob = 0;
         float biggestBlobCenterX = fromCenter ? 0 : -1;
         float biggestBlobCenterY = fromCenter ? 0 : -1;
-        for (std::vector<cv::KeyPoint>::iterator blob = blobs.begin(); blob != blobs.end(); blob++) {
-            if (blob->size > biggestBlob) {
-                biggestBlob = blob->size;
-                biggestBlobCenterX = blob->pt.x;
-                biggestBlobCenterY = blob->pt.y;
+        // for (std::vector<cv::KeyPoint>::iterator blob = blobs.begin(); blob != blobs.end(); blob++) {
+        //     if (blob->size > biggestBlob) {
+        //         biggestBlob = blob->size;
+        //         biggestBlobCenterX = blob->pt.x;
+        //         biggestBlobCenterY = blob->pt.y;
+        //     }
+        // }
+
+        int biggestIndex = -1;
+
+        std::vector<std::vector<cv::Point>> contours;
+        cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+        for (size_t i = 0; i < contours.size(); i++) {
+            
+            auto c = contours[i];
+            int area = cv::contourArea(c);
+            RCLCPP_INFO(this->get_logger(), "Publishin %d", area);
+            if (area > biggestBlob) {
+                biggestBlob = area;
+                biggestIndex = i;
             }
+        }
+
+        float radius;
+        if (biggestIndex != -1) {
+            cv::Point2f center;
+            cv::minEnclosingCircle(contours[biggestIndex], center, radius);
+            biggestBlobCenterX = center.x;
+            biggestBlobCenterY = center.y;
         }
 
         if (showMask) {
             if (biggestBlob != 0) {
-                cv::circle(result, cv::Point(biggestBlobCenterX, biggestBlobCenterY), biggestBlob / 2, cv::Scalar(255, 0, 255), 2, cv::LINE_AA);
+                cv::circle(result, cv::Point(biggestBlobCenterX, biggestBlobCenterY), radius, cv::Scalar(255, 0, 255), 2, cv::LINE_AA);
             }
 
             cv::imshow("green", result);

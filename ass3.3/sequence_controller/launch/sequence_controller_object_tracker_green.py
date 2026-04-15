@@ -15,6 +15,7 @@ def generate_launch_description():
         parameters=[{
             'from_center': True,
             'threshold': 10,
+            'showMask': True
         }]
     )
 
