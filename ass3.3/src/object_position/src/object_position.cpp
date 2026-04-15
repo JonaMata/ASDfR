@@ -30,6 +30,10 @@ using std::placeholders::_1;
 class ObjectPosition : public rclcpp::Node {
 public:
     ObjectPosition() : Node("object_position") {
+        lightness_lower = this->declare_parameter<int>("lightness_lower", 30);
+        lightness_upper = this->declare_parameter<int>("lightness_upper", 200);
+        mask_lightness_upper = this->declare_parameter<int>("mask_lightness_upper", 80);
+        mask_lightness_lower = this->declare_parameter<int>("mask_lightness_lower", 30);
         threshold = this->declare_parameter<int>("threshold", 10);
         fromCenter = this->declare_parameter<bool>("from_center", false);
         showMask = declare_parameter<bool>("show_mask", false);
@@ -44,6 +48,7 @@ private:
 
     bool fromCenter;
     int threshold;
+    int lightness_lower, lightness_upper, mask_lightness_lower, mask_lightness_upper;
     bool showMask;
     mutable cv::Ptr<cv::SimpleBlobDetector> blobDetector;
 
@@ -69,8 +74,14 @@ private:
         cv::Mat frame_hsv;
         cv::cvtColor(frame, frame_hsv, cv::COLOR_BGR2HSV);
 
+        std::vector<cv::Mat> channels;
+        cv::split(frame_hsv, channels);
+        int lightness = (int)cv::mean(channels[2])[0];
+
+        lightness = std::clamp(lightness, lightness_lower, lightness_upper);
+        int mask_lightness = (lightness - lightness_lower) / (lightness_upper - lightness_lower) * (mask_lightness_upper - mask_lightness_lower) + mask_lightness_lower;
         cv::Mat mask;
-        cv::inRange(frame_hsv, cv::Scalar(30, 85, 80), cv::Scalar(85, 255, 255), mask);
+        cv::inRange(frame_hsv, cv::Scalar(30, 85, mask_lightness), cv::Scalar(85, 255, 255), mask);
 
         cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
         cv::morphologyEx(mask, mask, cv::MORPH_DILATE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(25, 25)));
