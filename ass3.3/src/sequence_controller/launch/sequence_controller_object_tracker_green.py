@@ -15,6 +15,7 @@ def generate_launch_description():
         parameters=[{
             'from_center': True,
             'threshold': 10,
+	    'show_mask': False,
         }]
     )
 
@@ -25,7 +26,8 @@ def generate_launch_description():
         parameters=[
             {
                 'track_object': True,
-                'tau': 0.1,
+                'tau': 0.03,
+		'miauw': 0.3,
             }
         ],
     )

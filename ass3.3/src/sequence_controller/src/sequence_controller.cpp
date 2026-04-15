@@ -21,7 +21,8 @@ public:
         : Node("sequence_controller") {
 
         bool track_object = this->declare_parameter("track_object", false);
-        tau = this->declare_parameter("tau", 10.0);
+        tau = this->declare_parameter("tau", 0.03);
+	miauw = this->declare_parameter("miauw", 0.06);
 
         want_ball_size = declare_parameter("want_ball_size", 60.0);
         current_step_ = 0;
@@ -55,6 +56,7 @@ private:
     double want_ball_size;
     size_t current_step_;
     double tau;
+    double miauw;
     bool initialised = false;
 
     void xenoState_callback(const std_msgs::msg::Int32::SharedPtr msg) {
@@ -92,7 +94,7 @@ private:
             if (abs(z) < 10) {
                 z = 0;
             }
-            setpointForward = std::clamp(z*tau, -5.0, 5.0);
+            setpointForward = std::clamp(z*miauw, -5.0, 5.0);
             // if (abs(want_ball_size - point->z) < 5) {
             //     setpointForward = 0;
             // }
@@ -104,6 +106,7 @@ private:
             if(std::max(abs(setpointLeft), abs(setpointRight)) == 0) {
                 scalingFactor = 1;
             }
+	    scalingFactor = 1;
             setpointLeft = setpointLeft * scalingFactor;
             setpointRight = setpointRight * scalingFactor;
         }

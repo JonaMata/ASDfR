@@ -70,7 +70,7 @@ private:
         cv::cvtColor(frame, frame_hsv, cv::COLOR_BGR2HSV);
 
         cv::Mat mask;
-        cv::inRange(frame_hsv, cv::Scalar(30, 30, 30), cv::Scalar(85, 255, 255), mask);
+        cv::inRange(frame_hsv, cv::Scalar(30, 85, 80), cv::Scalar(85, 255, 255), mask);
 
         cv::morphologyEx(mask, mask, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
         cv::morphologyEx(mask, mask, cv::MORPH_DILATE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(25, 25)));
