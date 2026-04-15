@@ -56,9 +56,11 @@ private:
             params.maxArea = msg.height * msg.height;
             params.filterByColor = true;
             params.blobColor = 255;
-            params.filterByConvexity = true;
+            // params.filterByConvexity = true;
+            params.filterByConvexity = false;
             params.minConvexity = 0.4;
-            params.filterByInertia = true;
+            // params.filterByInertia = true;
+            params.filterByInertia = false;
             params.minInertiaRatio = 0.5;
             blobDetector = cv::SimpleBlobDetector().create(params);
         }
@@ -75,8 +77,6 @@ private:
         cv::morphologyEx(mask, mask, cv::MORPH_ERODE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(10, 10)));
         cv::morphologyEx(mask, mask, cv::MORPH_ERODE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-        cv::Mat result;
-        cv::bitwise_and(frame, frame, result, mask);
 
         std::vector<cv::KeyPoint> blobs;
         blobDetector->detect(mask, blobs);
@@ -93,6 +93,8 @@ private:
         }
 
         if (showMask) {
+            cv::Mat result;
+            cv::bitwise_and(frame, frame, result, mask);
             if (biggestBlob != 0) {
                 cv::circle(result, cv::Point(biggestBlobCenterX, biggestBlobCenterY), biggestBlob / 2, cv::Scalar(255, 0, 255), 2, cv::LINE_AA);
             }
