@@ -24,7 +24,6 @@ using namespace std::chrono_literals;
 using std::placeholders::_1;
 
 ObjectPosition::ObjectPosition() : Node("object_position") {
-    threshold = this->declare_parameter<int>("threshold", 10);
     fromCenter = this->declare_parameter<bool>("from_center", false);
     showMask = declare_parameter<bool>("show_mask", false);
     subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
@@ -86,37 +85,6 @@ void ObjectPosition::topic_callback(const sensor_msgs::msg::Image& msg) const {
         cv::imshow("green", result);
         cv::waitKey(1);
     }
-
-    // // Sum pixel coordinates and count total amount of pixels to later get average position
-    // int total_above_threshold = 0;
-    // int sum_x = 0;
-    // int sum_y = 0;
-
-    // result.forEach<Pixel>([&](Pixel& p, const int* position) -> void {
-    //     if ((p.x + p.y + p.z) / 3 > threshold) {
-    //         total_above_threshold++;
-    //         // x coordinate is the column
-    //         sum_x += position[1] + 1;
-    //         // y coordinate is the row
-    //         sum_y += position[0] + 1;
-    //     }
-    //     });
-
-    // // If fromCenter is false, we don't calculate the distance from the center
-    // // and -1 is used to indicate no object. Otherwise 0 (the center) is used.
-    // int x = fromCenter ? 0 : -1;
-    // int y = fromCenter ? 0 : -1;
-    // if (total_above_threshold > msg.width * msg.height * 0.05) {
-    //     // Get average pixel location
-    //     x = sum_x / total_above_threshold - 1;
-    //     y = sum_y / total_above_threshold - 1;
-    //     // If fromCenter is true, we subtract half the image width to get
-    //     // the distance from the center in range [-width/2, width/2]
-    //     if (fromCenter) {
-    //         x -= msg.width / 2;
-    //         y -= msg.height / 2;
-    //     }
-    // }
 
     if (fromCenter) {
         if (biggestBlob == 0) {
