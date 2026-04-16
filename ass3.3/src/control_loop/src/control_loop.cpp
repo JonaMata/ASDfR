@@ -83,13 +83,20 @@ int ControlLoop::run()
     prevChannel1 = channel1;
     prevChannel2 = channel2;
 
-    u[0] -= diff1 * 0.000393822 / 4;
-    u[1] += diff2 * 0.000393822 / 4;
+    double radDiff1 = -diff1 * 0.000393822 / 4;
+    double radDiff2 = diff2 * 0.000393822 / 4;
+
+    double speedRight = radDiff1/0.01;
+    double speedLeft = radDiff2/0.01;
+
+    u[0] += radDiff1;
+    u[1] += radDiff2;
     u[2] = ros_msg.steer_right;
     u[3] = ros_msg.steer_left;
 
     controller.Calculate(u, y);
     monitor.printf("set_right: %f\tset_left: %f\tpos_right: %f\tpos_left: %f\n", u[2], u[3], u[0], u[1]);
+    monitor.printf("speed_right: %f\tspeed_left: %f\n", speedRight, speedLeft);
 
     xeno_msg.pos_right = u[0];
     xeno_msg.pos_left = u[1];
