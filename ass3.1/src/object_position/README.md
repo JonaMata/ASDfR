@@ -1,7 +1,7 @@
 Package object_position
 -----------------------------------------------
 ### Description 
-This package implements a node that finds the position of an object in an image. It checks each pixel against a brightness threshold to define whether it is part of the object and then finds the center of mass of all object pixels.
+This package implements a node that finds the position of the largest green blob-shaped object in the image. It uses OpenCV to create and clean a color green mask and then runs a SimpleBlobDetector. The z coordinate of the output's Point is the size of the blob.
 
 ### Inputs
 `/image`  
@@ -17,8 +17,8 @@ In a terminal run the following commands:
 `ros2 run object_position object_position`
 
 ### Parameters
-int `threshold` : Sets the brightness threshold.
 bool `from_center` : Define whether the position coordinates should be relative to the center of the image.
+bool `show_mask` : Define whether the masked frame with a circle around the detected blob should be shown with `imshow`. This significantly slows processing when used over X forwarding.
 
 ### Core components 
-* `topic_callback()`: Find the center of mass and publish to /output/object_position on each received image frame.
+* `topic_callback()`: Find the green blob's position and publish to /output/object_position on each received image frame.
