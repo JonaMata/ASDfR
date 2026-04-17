@@ -44,6 +44,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        cam2image,
         object_position,
         sequence_controller,
     ])
