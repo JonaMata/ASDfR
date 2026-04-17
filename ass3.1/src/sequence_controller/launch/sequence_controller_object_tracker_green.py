@@ -37,7 +37,6 @@ def generate_launch_description():
         ],
         parameters=[
             {
-                'track_object': True,
                 'tau': 0.1,
             }
         ],
