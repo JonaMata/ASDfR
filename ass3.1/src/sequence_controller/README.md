@@ -8,9 +8,6 @@ This package implements a sequence controller that can either use a predefined l
         Type: geometry_msgs/msg/Point
         Only used when track_object is set to true.  
 
-`/input/camera_position`  
-        Type: geometry_msgs/msg/PointStamped
-        Only used when track_object is set to true.
 
 ### Outputs
 `/output/left_motor/setpoint_vel`  
@@ -23,7 +20,7 @@ This package implements a sequence controller that can either use a predefined l
 In a terminal run one of the following sets of commands:
 
 For using a setpoints list:
-`ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/cam2image_vm2ros/config/cam2image.yaml`  
+`ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/sequence_controller/config/cam2image_relbot.yaml`  
 `ros2 launch sequence_controller sequence_controller_launch.py`
 
 For using object tracking:

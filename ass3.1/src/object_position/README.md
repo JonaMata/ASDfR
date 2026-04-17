@@ -13,7 +13,7 @@ This package implements a node that finds the position of the largest green blob
 
 ### Run
 In a terminal run the following commands:
-`ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/cam2image_vm2ros/config/cam2image.yaml`  
+`ros2 run cam2image_vm2ros cam2image --ros-args --params-file src/sequence_controller/config/cam2image_relbot.yaml`  
 `ros2 run object_position object_position`
 
 ### Parameters
