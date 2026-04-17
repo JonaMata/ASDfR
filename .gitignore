@@ -6,3 +6,4 @@ build/
 
 *.yaml
 !*.example.yaml
+!cam2image_relbot.yaml
