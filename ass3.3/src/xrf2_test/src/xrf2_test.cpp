@@ -10,7 +10,7 @@ Xrf2Test::Xrf2Test(): Node("xrf2_test") {
 
     double wheel_r = 0.101;
     double wheel_circ = M_PI * wheel_r;
-    double wheel_base = 0.2;
+    double wheel_base = 0.21;
     double wheel_base_circ = M_PI * wheel_base;
     double wheel_speed = wheel_base_circ / 4.0 / 3.0;
     wheel_rads = wheel_speed/wheel_circ*2.0*M_PI;
