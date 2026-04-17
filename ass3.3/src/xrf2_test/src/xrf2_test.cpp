@@ -44,15 +44,18 @@ void Xrf2Test::sequence_step() {
 
     xrf2_msgs::msg::Ros2Xeno msg;
 
-    if (stepIndex > 0 && stepIndex <= 3) {
-        msg.steer_left = 2.0;
-        msg.steer_right = 2.0;
-    } else if (stepIndex <= 6) {
-        msg.steer_left = wheel_rads;
-        msg.steer_right = -wheel_rads;
-    } else {
-        msg.steer_left = 0.0;
-        msg.steer_right = 0.0;
+
+    msg.steer_left = 0.0;
+    msg.steer_right = 0.0;
+
+    if (stepIndex > 0) {
+        if (stepIndex <= 3) {
+            msg.steer_left = 2.0;
+            msg.steer_right = 2.0;
+        } else if (stepIndex <= 6) {
+            msg.steer_left = wheel_rads;
+            msg.steer_right = -wheel_rads;
+        }
     }
     ros2XenoPub->publish(msg);
     stepIndex++;
